@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "299600862122",
+    "project_id": "drawmoney-c2494",
+    "storage_bucket": "drawmoney-c2494.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:299600862122:android:ebcdf7ceeb12bbd64ee9d3",
+        "android_client_info": {
+          "package_name": "com.drawmoney"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgK2VabPNWb8Rdzp_YwWFr0m3PD68KOe8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
