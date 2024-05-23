@@ -121,7 +121,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     try {
       userId = await SharedPre.getStringValue('userId');
       var request = http.MultipartRequest('POST',
-          Uri.parse('https://admin.drawmoney.in/Apicontroller/delete_account'));
+          Uri.parse('${baseUrl}/delete_account'));
       request.fields.addAll({'user_id': userId.toString()});
       http.StreamedResponse response = await request.send();
       var json = jsonDecode(await response.stream.bytesToString());

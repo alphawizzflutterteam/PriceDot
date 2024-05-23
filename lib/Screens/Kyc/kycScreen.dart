@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:pricedot/Widgets/designConfig.dart';
 
 class KycScreen extends StatefulWidget {
   final String adf;
@@ -33,6 +34,7 @@ class _KycScreenState extends State<KycScreen> {
     print(widget.pan);
     return Scaffold(
       appBar: AppBar(
+        flexibleSpace: FlexibleSpace,
         leading: IconButton(
             onPressed: () => Navigator.pop(context),
             icon: const Icon(
@@ -53,7 +55,7 @@ class _KycScreenState extends State<KycScreen> {
           children: [
             Container(
               height: MediaQuery.of(context).size.height * .18,
-              color: AppColors.secondary1,
+              color: AppColors.secondary1.withOpacity(0.3),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
@@ -219,7 +221,7 @@ class _KycScreenState extends State<KycScreen> {
                 ? Center(
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFF01BC09),
+                          backgroundColor:AppColors.buttonColor,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(7)),
                           fixedSize: Size.fromWidth(

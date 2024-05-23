@@ -22,7 +22,10 @@ class _NoDataFoundState extends State<NoDataFound> {
         image = 'assets/images/nodata-en.png';
         break;
       case "3":
-        image = 'assets/images/nodata-gu.png';
+        image = 'assets/images/nodata-ta.png';
+        break;
+      case "4":
+        image = 'assets/images/nodata-te.png';
         break;
       default:
         image = 'assets/images/nodata-hi.png';

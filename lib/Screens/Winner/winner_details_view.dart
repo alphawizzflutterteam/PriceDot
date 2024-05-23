@@ -168,7 +168,7 @@ class _WinnerDetailsScreenState extends State<WinnerDetailsScreen> {
       'Cookie': 'ci_session=cefaa9477065503c4ca2ed67af58f3c87c6bfab4'
     };
     var request = http.Request('POST',
-        Uri.parse('https://admin.drawmoney.in/Apicontroller/getResults'));
+        Uri.parse('${baseUrl}/getResults'));
     request.body = json.encode({'game_id': widget.gId});
     print("------Surendra-------${request.body}----------");
     request.headers.addAll(headers);

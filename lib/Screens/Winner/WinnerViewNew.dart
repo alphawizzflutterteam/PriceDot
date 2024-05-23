@@ -17,6 +17,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
+import 'package:pricedot/Widgets/designConfig.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../Local_Storage/shared_pre.dart';
@@ -186,6 +187,7 @@ class _WinnerScreenNewState extends State<WinnerScreenNew>
     var width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
+        flexibleSpace: FlexibleSpace,
         automaticallyImplyLeading: false,
         //toolbarHeight: 60,
         centerTitle: true,
@@ -981,14 +983,14 @@ class _WinnerScreenNewState extends State<WinnerScreenNew>
 
   paymentStatus(String orderID) async {
     try {
-      //https://admin.drawmoney.in/Apicontroller/get_game_payment_status?order_id=1710833718
+      //${baseUrl}/get_game_payment_status?order_id=1710833718
       var request = await http.get(Uri.parse(
-          'https://admin.drawmoney.in/Apicontroller/get_game_payment_status?order_id=' +
+          '${baseUrl}/get_game_payment_status?order_id=' +
               orderID));
       //  request.fields.addAll({'order_id': orderID});
 
       print(
-          'https://admin.drawmoney.in/Apicontroller/get_game_payment_status?order_id=' +
+          '${baseUrl}/get_game_payment_status?order_id=' +
               orderID);
 
       //  http.StreamedResponse response = await request.send();

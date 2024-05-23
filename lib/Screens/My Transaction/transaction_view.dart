@@ -501,7 +501,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
       var request = http.MultipartRequest(
           'POST',
           Uri.parse(
-              'https://admin.drawmoney.in/Apicontroller/get_transactions'));
+              '${baseUrl}/get_transactions'));
       request.fields.addAll({'user_id': userId.toString()});
 
       http.StreamedResponse response = await request.send();
@@ -553,7 +553,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
 //       'Content-Type': 'application/json',
 //       'Cookie': 'ci_session=18afbdd33b04ace40a80944d83e9e23e3ab91c3e'
 //     };
-//     var request = http.Request('POST', Uri.parse('https://admin.drawmoney.in/Apicontroller/getLottery'));
+//     var request = http.Request('POST', Uri.parse('${baseUrl}/getLottery'));
 //     request.body = json.encode({
 //       "game_id": widget.gId,
 //       "user_id": userId

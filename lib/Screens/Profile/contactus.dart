@@ -95,6 +95,84 @@ class ContactUsScreen extends StatelessWidget {
               ),
             ),
           ),
+          const SizedBox(height: 30),
+          GestureDetector(
+            onTap: () {
+              launchUrl(Uri.parse('tel:9876543210'));
+            },
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 10),
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(boxShadow: [
+                BoxShadow(
+                    blurRadius: 12,
+                    offset: Offset(0, 3),
+                    color: Colors.black.withOpacity(.05))
+              ], color: Colors.white, borderRadius: BorderRadius.circular(7)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Icon(
+                    Icons.phone,
+                    color: AppColors.iconColor,
+                  ),
+                  SizedBox(width: 15),
+                  Text(
+                    "+91 9876543210",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  Spacer(),
+                  Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    size: 15,
+                    color: Colors.grey,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 30),
+          GestureDetector(
+            onTap: ()async {
+              // var whatsapp = "+919926202390";
+              var whatsappURl_android = "whatsapp://send?phone=" +'+919876543210' +
+                  "&text=${"Pricedot"}";
+              await launch(whatsappURl_android);
+              // if (await canLaunch(whatsappURl_android)) {
+
+            },
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 10),
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(boxShadow: [
+                BoxShadow(
+                    blurRadius: 12,
+                    offset: Offset(0, 3),
+                    color: Colors.black.withOpacity(.05))
+              ], color: Colors.white, borderRadius: BorderRadius.circular(7)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ImageIcon(
+                    AssetImage("assets/icons/whatsapp.png"),
+                    size: 25,
+                    color: AppColors.primary,
+                  ),
+                  SizedBox(width: 15),
+                  Text(
+                    "Whatsapp",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  Spacer(),
+                  Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    size: 15,
+                    color: Colors.grey,
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );

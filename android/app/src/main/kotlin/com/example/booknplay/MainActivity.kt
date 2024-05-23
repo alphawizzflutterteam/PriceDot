@@ -1,4 +1,4 @@
-package com.drawmoney
+package com.pricedot.app
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -50,19 +50,20 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBgK2VabPNWb8Rdzp_YwWFr0m3PD68KOe8',
-    appId: '1:299600862122:android:ebcdf7ceeb12bbd64ee9d3',
-    messagingSenderId: '299600862122',
-    projectId: 'drawmoney-c2494',
-    storageBucket: 'drawmoney-c2494.appspot.com',
+    apiKey: 'AIzaSyAmH0BNVGLWTd-IGbb23FJoER995gpyqc0',
+    appId: '1:976047711847:android:6701d8d9c761d0e29696c2',
+    messagingSenderId: '976047711847',
+    projectId: 'pricedot-7b4b0',
+    storageBucket: 'pricedot-7b4b0.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyB17LsCCnaS3tr5xtZQRTzydB5F_IYxKXI',
-    appId: '1:299600862122:ios:25eb07f6b1a583ee4ee9d3',
-    messagingSenderId: '299600862122',
-    projectId: 'drawmoney-c2494',
-    storageBucket: 'drawmoney-c2494.appspot.com',
-    iosBundleId: 'com.drawmoney',
+    apiKey: 'AIzaSyBxwR1wkuaJ3jJc6tuj3gXaGjuuysdvOw4',
+    appId: '1:976047711847:ios:33172e0b8307c6979696c2',
+    messagingSenderId: '976047711847',
+    projectId: 'pricedot-7b4b0',
+    storageBucket: 'pricedot-7b4b0.appspot.com',
+    iosBundleId: 'com.pricedot.app',
   );
+
 }

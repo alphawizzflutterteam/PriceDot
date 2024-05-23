@@ -184,7 +184,7 @@ class _ResultScreenState extends State<ResultScreen> {
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 5, vertical: 5),
                                         decoration: BoxDecoration(
-                                            color: const Color(0XffF8B782),
+                                            color: AppColors.greyColor,
                                             borderRadius:
                                                 BorderRadius.circular(7)),
                                         child: Row(

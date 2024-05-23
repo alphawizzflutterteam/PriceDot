@@ -61,7 +61,7 @@ class _MyInvitationState extends State<MyInvitation> {
         visible = false;
       });
       var request = http.MultipartRequest('POST',
-          Uri.parse('https://admin.drawmoney.in/Apicontroller/getReferrals'));
+          Uri.parse('${baseUrl}/getReferrals'));
       print(userId);
       request.fields.addAll({'user_id': userId.toString()});
       http.StreamedResponse response = await request.send();
@@ -89,7 +89,7 @@ class _MyInvitationState extends State<MyInvitation> {
         isloding = true;
       });
       var request = http.Request('GET',
-          Uri.parse('https://admin.drawmoney.in/Apicontroller/settings'));
+          Uri.parse('${baseUrl}/settings'));
 
       http.StreamedResponse response = await request.send();
       var json = jsonDecode(await response.stream.bytesToString());
@@ -434,7 +434,7 @@ class _MyInvitationState extends State<MyInvitation> {
     await FlutterShare.share(
       title: 'Invite Friend',
       text:
-          'Drawmoney\nYou can finf our app from below URL \nAndroid\n${'https://play.google.com/store/apps/details?id=com.drawmoney'}\nReferral Code : ${userReferCode}',
+          'Drawmoney\nYou can finf our app from below URL \nAndroid\n${'https://play.google.com/store/apps/details?id=com.pricedot.app'}\nReferral Code : ${userReferCode}',
     );
   }
 

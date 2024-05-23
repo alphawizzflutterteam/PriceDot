@@ -51,7 +51,7 @@ class _AddMoneyState extends State<AddMoney> {
       'Cookie': 'ci_session=dc01298267f1df677d56b79b00289958a862e530'
     };
     var request = http.Request('POST',
-        Uri.parse('https://admin.drawmoney.in/Apicontroller/getWalletBalance'));
+        Uri.parse('${baseUrl}/Apicontroller/getWalletBalance'));
     request.body = json.encode({"user_id": userId});
     request.headers.addAll(headers);
 

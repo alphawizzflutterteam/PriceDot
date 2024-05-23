@@ -751,7 +751,7 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
       var request = http.MultipartRequest(
           'POST',
           Uri.parse(
-              'https://admin.drawmoney.in/Apicontroller/init_bank_payout?type=${selectedOption == 'UPI' ? 'upi' : 'bank'}&account_number=${selectedOption == 'UPI' ? upiController.text : accountNumberController.text}&account_ifsc=${selectedOption == 'UPI' ? '' : ifscController.text}&bankname=${selectedOption == 'UPI' ? '' : bankNameController.text}&confirm_acc_number=${selectedOption == 'UPI' ? '' : accountNumberController.text}&requesttype=&beneficiary_name=${selectedOption == 'UPI' ? numberController.text : bnameController.text}&amount=${amountController.text}&narration=sfhjkhfjkd&transaction_id=${DateTime.now().hashCode}'));
+              '${baseUrl}/init_bank_payout?type=${selectedOption == 'UPI' ? 'upi' : 'bank'}&account_number=${selectedOption == 'UPI' ? upiController.text : accountNumberController.text}&account_ifsc=${selectedOption == 'UPI' ? '' : ifscController.text}&bankname=${selectedOption == 'UPI' ? '' : bankNameController.text}&confirm_acc_number=${selectedOption == 'UPI' ? '' : accountNumberController.text}&requesttype=&beneficiary_name=${selectedOption == 'UPI' ? numberController.text : bnameController.text}&amount=${amountController.text}&narration=sfhjkhfjkd&transaction_id=${DateTime.now().hashCode}'));
 
       http.StreamedResponse response = await request.send();
       var json = jsonDecode(await response.stream.bytesToString());

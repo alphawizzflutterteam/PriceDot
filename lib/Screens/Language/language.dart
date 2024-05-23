@@ -159,7 +159,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
                   child: Row(
                     children: [
                       Text(
-                        "ગુજરાતી",
+                        "தமிழ்",
                         style: TextStyle(
                           fontSize: 32,
                         ),
@@ -181,6 +181,48 @@ class _LanguageScreenState extends State<LanguageScreen> {
                 ),
               ),
             ),
+            Divider(color: Colors.transparent),
+            Container(
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(colors: [
+                    AppColors.greyColor.withOpacity(.1),
+                    AppColors.greyColor.withOpacity(.5),
+                  ]),
+                  borderRadius: BorderRadius.circular(12)),
+              width: double.infinity,
+              child: DottedBorder(
+                color: AppColors.primary,
+                strokeWidth: 1,
+                dashPattern: const [3, 5],
+                borderType: BorderType.RRect,
+                radius: const Radius.circular(12),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    children: [
+                      Text(
+                        "డెల్గు",
+                        style: TextStyle(
+                          fontSize: 32,
+                        ),
+                      ),
+                      Spacer(),
+                      Checkbox(
+                        activeColor: AppColors.buttonColor,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15)),
+                        value: selectedLang == '4' ? true : false,
+                        onChanged: (val) {
+                          setState(() {
+                            selectedLang = '4';
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
             Spacer(),
             ElevatedButton(
                 onPressed: () async {
@@ -192,8 +234,10 @@ class _LanguageScreenState extends State<LanguageScreen> {
                       Get.updateLocale(Locale('en', 'US'));
                       break;
                     case '3':
-                      Get.updateLocale(Locale('gu', 'IN'));
-
+                      Get.updateLocale(Locale('ta', 'IN'));
+                      break;
+                    case '4':
+                      Get.updateLocale(Locale('te', 'IN'));
                       break;
                     default:
                       Get.updateLocale(Locale('en', 'US'));

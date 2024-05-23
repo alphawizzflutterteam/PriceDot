@@ -91,11 +91,17 @@ class _Otp extends State<OTPVerificationScreen> {
                               style: const TextStyle(
                                   fontSize: 20, color: AppColors.fntClr),
                             ),
+                            Text(
+                              "OTP: ${controller.otp}",
+                              style: const TextStyle(
+                                  fontSize: 20, color: AppColors.fntClr),
+                            ),
                             // Text('OTP: ${controller.otp}',style: const TextStyle(fontSize: 20,color: AppColors.fntClr),),
                             const SizedBox(
                               height: 50,
                             ),
                             PinCodeTextField(
+
                               keyboardType: TextInputType.phone,
                               onChanged: (value) {
                                 controller.otp = value.toString();
