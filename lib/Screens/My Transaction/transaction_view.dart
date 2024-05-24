@@ -501,7 +501,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
       var request = http.MultipartRequest(
           'POST',
           Uri.parse(
-              '${baseUrl}/get_transactions'));
+              '${baseUrl}/Apicontroller/get_transactions'));
       request.fields.addAll({'user_id': userId.toString()});
 
       http.StreamedResponse response = await request.send();

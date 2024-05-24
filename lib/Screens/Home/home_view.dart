@@ -225,8 +225,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ? const SizedBox.shrink()
                 : InkWell(
                     onTap: () {
-                      // Get.toNamed(walletScreen);
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => CouponDiscountScreen(),));
+                      Get.toNamed(walletScreen);
+
                     },
                     child: Container(
                       height: 32,

@@ -4,6 +4,8 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:developer' as d;
 
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 import 'package:pricedot/Models/HomeModel/get_profile_model.dart';
 import 'package:pricedot/Routes/routes.dart';
 import 'package:pricedot/Screens/Dashboard/dashboard_view.dart';
@@ -26,6 +28,8 @@ import '../../Models/HomeModel/lottery_list_model.dart';
 import '../../Services/api_services/apiConstants.dart';
 import 'package:http/http.dart' as http;
 import 'package:web_socket_channel/web_socket_channel.dart';
+
+import '../CouponDiscount.dart';
 
 class WinnerScreenNew extends StatefulWidget {
   WinnerScreenNew({Key? key, this.isFrom, this.gId, this.sport, this.sportLeft})
@@ -300,8 +304,8 @@ class _WinnerScreenNewState extends State<WinnerScreenNew>
                                 borderRadius: BorderRadius.circular(7),
                                 gradient: const LinearGradient(
                                   colors: [
-                                    Color(0XffB9271B),
-                                    Color(0XffFF5148)
+                                    AppColors.primary,
+                                    AppColors.secondary,
                                   ], //0Xff810C07
                                   // Define the colors
                                   begin: Alignment.topLeft,
@@ -338,8 +342,8 @@ class _WinnerScreenNewState extends State<WinnerScreenNew>
                         height: height * .27,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 16),
-                        decoration: const BoxDecoration(
-                          color: AppColors.secondary1,
+                        decoration:  BoxDecoration(
+                          color: AppColors.secondary1.withOpacity(0.5),
                         ),
                         child: Column(
                           children: [
@@ -357,7 +361,7 @@ class _WinnerScreenNewState extends State<WinnerScreenNew>
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 8, vertical: 5),
                                   decoration: BoxDecoration(
-                                      color: const Color(0xFF01BC09),
+                                      color: AppColors.greyColor,
                                       borderRadius: BorderRadius.circular(7)),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -410,8 +414,8 @@ class _WinnerScreenNewState extends State<WinnerScreenNew>
                       Container(
                         width: width,
                         padding: const EdgeInsets.symmetric(horizontal: 16),
-                        decoration: const BoxDecoration(
-                          color: AppColors.secondary1,
+                        decoration:  BoxDecoration(
+                          color: AppColors.secondary1.withOpacity(0.5),
                         ),
                         child: Column(
                           children: [
@@ -441,29 +445,96 @@ class _WinnerScreenNewState extends State<WinnerScreenNew>
                                             ),
                                           ),
                                           builder: (BuildContext context) {
-                                            return Container(
+                                            String disAmt='';
+                                            String finalTotal='';
+                                            String code='';
+                                            return StatefulBuilder(builder: (context, setState) => Container(
                                               decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.only(
                                                   topLeft: Radius.circular(20),
                                                   topRight: Radius.circular(20),
                                                 ),
-                                                color: AppColors.secondary1,
+                                                color: AppColors.secondary1.withOpacity(0.3),
                                               ),
-                                              padding: const EdgeInsets.all(8),
+                                              padding: const EdgeInsets.all(16),
                                               width: width,
                                               child: Column(
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: <Widget>[
-                                                  CircleAvatar(
-                                                    radius: 45,
-                                                    backgroundColor:
-                                                        Colors.white,
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Image.asset(
-                                                          "assets/images/wallet1.png"),
+                                                  Row(
+                                                    children: [
+                                                      Expanded(
+                                                        child: Container(
+                                                          padding:const EdgeInsets.symmetric(horizontal: 16,vertical: 8),
+                                                          decoration: BoxDecoration(
+                                                              color: AppColors.whit,
+                                                              borderRadius: BorderRadius.circular(7)
+                                                          ),
+                                                          child: Text(code!=''?code :"Apply Coupon",style: TextStyle(fontSize: 16),),
+                                                        ),
+                                                      ),
+                                                      const VerticalDivider(color: Colors.transparent),
+                                                      GestureDetector(
+                                                        onTap: (){
+                                                          Navigator.push(context, MaterialPageRoute(builder: (context) => CouponDiscountScreen(
+                                                            entryFee: lotteryDetailsModel!.data!.lottery!.ticketPrice.toString(),
+                                                          ),)).then((value) {
+                                                            disAmt=value['discAmt']??'';
+                                                            code=value['code']??'';
+                                                            finalTotal=value['finalTotal']??'';
+                                                            setState((){});
+                                                          });
+                                                        },
+                                                        child: Container(
+                                                          padding:const EdgeInsets.symmetric(horizontal: 20,vertical: 8),
+                                                          decoration: BoxDecoration(
+                                                            color: AppColors.whit,
+                                                            borderRadius: BorderRadius.circular(7),
+                                                            gradient: LinearGradient(
+                                                              colors: [
+                                                                AppColors.primary,
+                                                                AppColors.secondary,
+                                                              ],
+                                                              begin: Alignment.topLeft,
+                                                              end: Alignment.bottomRight,
+                                                            ),
+                                                          ),
+                                                          child: Text("View",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,color: AppColors.whit),),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  SizedBox(height: 10),
+                                                  Container(
+                                                    padding:const EdgeInsets.symmetric(horizontal: 16,vertical: 8),
+                                                    decoration: BoxDecoration(
+                                                        color: AppColors.whit,
+                                                        borderRadius: BorderRadius.circular(7)
+                                                    ),
+                                                    child: Column(
+                                                      children: [
+                                                        Row(
+                                                          mainAxisAlignment:MainAxisAlignment.spaceBetween,
+                                                          children: [
+                                                            Text("Entry Fee:",style: TextStyle(fontSize: 16),),
+                                                            Text("₹ ${lotteryDetailsModel!.data!.lottery!.ticketPrice}",style: TextStyle(fontSize: 16),),
+                                                          ],
+                                                        ),
+                                                  disAmt!=''?      Row(
+                                                          mainAxisAlignment:MainAxisAlignment.spaceBetween,
+                                                          children: [
+                                                            Text("Coupon Discount:",style: TextStyle(fontSize: 16),),
+                                                            Text("-₹ ${disAmt}",style: TextStyle(fontSize: 16),),
+                                                          ],
+                                                        ):SizedBox.shrink(),
+                                                        disAmt!=''?       Row(
+                                                          mainAxisAlignment:MainAxisAlignment.spaceBetween,
+                                                          children: [
+                                                            Text("To Pay:",style: TextStyle(fontSize: 16),),
+                                                            Text("₹ ${finalTotal!=''?finalTotal: lotteryDetailsModel!.data!.lottery!.ticketPrice}",style: TextStyle(fontSize: 16),),
+                                                          ],
+                                                        ):SizedBox.shrink(),
+                                                      ],
                                                     ),
                                                   ),
                                                   SizedBox(height: 10),
@@ -474,30 +545,30 @@ class _WinnerScreenNewState extends State<WinnerScreenNew>
                                                       payWallet(context);
                                                     },
                                                     child: Container(
+                                                      width: double.infinity,
+                                                      alignment: Alignment.center,
                                                       padding: const EdgeInsets
                                                           .symmetric(
                                                           horizontal: 16,
                                                           vertical: 8),
                                                       decoration: BoxDecoration(
                                                           borderRadius:
-                                                              BorderRadius
-                                                                  .circular(7),
+                                                          BorderRadius
+                                                              .circular(7),
                                                           gradient:
-                                                              LinearGradient(
-                                                                  colors: [
-                                                                Color(
-                                                                    0XffB9271B),
-                                                                Color(
-                                                                    0XffFF5148)
+                                                          LinearGradient(
+                                                              colors: [
+                                                                AppColors.primary,
+                                                                AppColors.secondary,
                                                               ])),
                                                       child: Text(
                                                         "PAY BY WALLET".tr,
                                                         style: TextStyle(
                                                             fontSize: 16,
                                                             fontWeight:
-                                                                FontWeight.bold,
+                                                            FontWeight.bold,
                                                             color:
-                                                                Colors.white),
+                                                            Colors.white),
                                                       ),
                                                     ),
                                                   ),
@@ -520,7 +591,7 @@ class _WinnerScreenNewState extends State<WinnerScreenNew>
                                                   // ),
                                                 ],
                                               ),
-                                            );
+                                            ));
                                           },
                                         );
                                       }
@@ -534,8 +605,9 @@ class _WinnerScreenNewState extends State<WinnerScreenNew>
                                         borderRadius: BorderRadius.circular(8),
                                         gradient: const LinearGradient(
                                           colors: [
-                                            Color(0XffB9271B),
-                                            Color(0XffFF5148)
+                                            AppColors.primary,
+                                            AppColors.secondary,
+
                                           ], //0Xff810C07
                                           // Define the colors
                                           begin: Alignment.topLeft,
@@ -871,9 +943,9 @@ class _WinnerScreenNewState extends State<WinnerScreenNew>
       "amount": amount,
       "lottery_numbers": randomNum ?? "0",
       "order_number": "2675db01c965",
-      "txn_id": "2675db01c965ijbdhgd"
+      "txn_id": DateTime.now().millisecondsSinceEpoch.toString(),
     });
-    print('${request.body}___________');
+    print('${request.body}___________b');
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
       final result = await response.stream.bytesToString();

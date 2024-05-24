@@ -360,6 +360,7 @@ class _AddMoneyState extends State<AddMoney> {
 
     if (response.statusCode == 200) {
       final result = await response.stream.bytesToString();
+      print(result);
       final jsonResponse = jsonDecode(result);
       print(jsonResponse.toString());
       if (jsonResponse['status_code'] == 200) {
