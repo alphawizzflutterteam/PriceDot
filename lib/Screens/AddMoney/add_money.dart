@@ -96,12 +96,15 @@ class _AddMoneyState extends State<AddMoney> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  "Add Money to wallet".tr,
-                  style: TextStyle(
-                      fontSize: 24,
-                      fontFamily: 'Fugazone',
-                      color: AppColors.buttonColor),
+                Container(
+                  width:MediaQuery.of(context).size.width*.65,
+                  child: Text(
+                    "Add Money to wallet".tr,
+                    style: TextStyle(
+                        fontSize: 24,
+                        fontFamily: 'Fugazone',
+                        color: AppColors.buttonColor),
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 10),

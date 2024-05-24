@@ -302,7 +302,7 @@ class _LotteryDetailsState extends State<LotteryDetails> {
                                       : !results[index].res
                                           ? Text("Looser",
                                               style: const TextStyle(
-                                                  color: AppColors.primary,
+                                                  color: AppColors.red,
                                                   fontWeight: FontWeight.bold))
                                           : Text(
                                               '₹ ${results[index].price}',

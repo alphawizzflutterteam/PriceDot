@@ -4,7 +4,9 @@ import 'dart:developer' as dev;
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:pricedot/Local_Storage/shared_pre.dart';
+import 'package:pricedot/Models/CategoryModel.dart';
 import 'package:pricedot/Models/HomeModel/get_profile_model.dart';
 import 'package:pricedot/Routes/routes.dart';
 import 'package:pricedot/Screens/Auth_Views/Login/login_view.dart';
@@ -34,6 +36,8 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
+import '../CouponDiscount.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -51,9 +55,9 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     getProfile();
     init(index: 1);
+    getCategory();
     getSlider();
     getResult();
-    callApi();
     getImage();
   }
 
@@ -85,6 +89,24 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     } catch (e, StackTrace) {
       print(StackTrace);
+      throw Exception(e);
+    }
+  }
+
+  CategoryModel? CatModel;
+  getCategory()async{
+    try{
+      var request = http.Request('GET', Uri.parse('${baseUrl}/Apicontroller/getCategory'));
+      http.StreamedResponse response = await request.send();
+      var json=jsonDecode(await response.stream.bytesToString());
+      if (response.statusCode == 200) {
+        CatModel=CategoryModel.fromJson(json);
+      }
+      else {
+        print(response.reasonPhrase);
+      }
+
+    }catch(e){
       throw Exception(e);
     }
   }
@@ -125,7 +147,10 @@ class _HomeScreenState extends State<HomeScreen> {
         image = 'assets/images/nodata-en.png';
         break;
       case "3":
-        image = 'assets/images/nodata-gu.png';
+        image = 'assets/images/nodata-ta.png';
+        break;
+      case "4":
+        image = 'assets/images/nodata-te.png';
         break;
       default:
         image = 'assets/images/nodata-hi.png';
@@ -133,146 +158,11 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  callApi() async {
-    var orderID = await SharedPre.getStringValue('orderId');
-    print("$orderID orderIDInit");
-    if (orderID != "") {
-      Future.delayed(Duration(seconds: 10), () {
-        paymentStatus();
-      });
-    }
-  }
 
-  buyLotteryApi() async {
-    var userId = await SharedPre.getStringValue('userId');
-    var gameId = await SharedPre.getStringValue('gameID');
-    var amount = await SharedPre.getStringValue('amount');
-    var lotteryNo = await SharedPre.getStringValue('drawNo');
 
-    var request =
-        http.Request('POST', Uri.parse('$baseUrl1/Apicontroller/buyLottery'));
-    request.body = json.encode({
-      "user_id": userId,
-      "game_id": gameId,
-      "amount": amount,
-      "lottery_numbers": lotteryNo,
-      "order_number": "2675db01c965",
-      "txn_id": "2675db01c965ijbdhgd"
-    });
-    print('${request.body}___________');
-    http.StreamedResponse response = await request.send();
-    if (response.statusCode == 200) {
-      final result = await response.stream.bytesToString();
-      final jsonResponse = jsonDecode(result);
-    } else {
-      print(response.reasonPhrase);
-    }
-  }
-
-  paymentStatus() async {
-    var orderID = await SharedPre.getStringValue('orderId');
-
-    try {
-      var request = http.MultipartRequest(
-          'POST',
-          Uri.parse(
-              'https://admin.drawmoney.in//Apicontroller/get_game_payment_status'));
-      request.fields.addAll({'order_id': orderID});
-
-      http.StreamedResponse response = await request.send();
-      var json = jsonDecode(await response.stream.bytesToString());
-      print(json);
-      if (response.statusCode == 200) {
-        if (json['status'] == "SUCCESS") {
-          var drawNo = await SharedPre.getStringValue('drawNo');
-
-          if (drawNo == "") {
-          } else {
-            await SharedPre.setValue('drawNo', "");
-            await SharedPre.setValue('orderId', "");
-            buyLotteryApi();
-            showDialog(
-                context: context,
-                builder: (c) {
-                  Future.delayed(const Duration(seconds: 3)).then((value) {
-                    Navigator.pop(c);
-                  });
-                  return Dialog(
-                    child: Container(
-                      decoration: BoxDecoration(
-                          border:
-                              Border.all(width: 3, color: AppColors.bgColor),
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: SizedBox(
-                          height: 150,
-                          child: Stack(
-                            children: [
-                              Lottie.asset('assets/images/confetti.json'),
-                              Center(
-                                child: Builder(builder: (context) {
-                                  return Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      const Text(
-                                        "Congratulations",
-                                        style: TextStyle(
-                                            fontSize: 24,
-                                            color: AppColors.red,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(16.0),
-                                        child: Column(
-                                          children: [
-                                            const Text(
-                                              "Your Draw No.",
-                                              style: const TextStyle(
-                                                  fontSize: 20,
-                                                  color: AppColors.red,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            Text(
-                                              drawNo,
-                                              style: const TextStyle(
-                                                  fontSize: 32,
-                                                  color: AppColors.red,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                }),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                });
-          }
-        } else {
-          //Fluttertoast.showToast(msg: json['message']);
-          Future.delayed(const Duration(seconds: 20))
-              .then((value) => paymentStatus());
-        }
-      } else {
-        print(response.reasonPhrase);
-      }
-    } catch (e, Stacktrace) {
-      print(Stacktrace);
-      throw Exception(e);
-    }
-  }
 
   int? _currentIndex = 1;
+  int _selectedCat = 0;
   final CarouselController carouselController = CarouselController();
   @override
   Widget build(BuildContext context) {
@@ -281,6 +171,51 @@ class _HomeScreenState extends State<HomeScreen> {
           backgroundColor: AppColors.primary,
           flexibleSpace: FlexibleSpace,
           automaticallyImplyLeading: false,
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(kToolbarHeight),
+            child:  Container(
+              padding: const EdgeInsets.only(top: 5),
+              color: Colors.white,
+              height: kToolbarHeight,
+              child:CatModel==null?SizedBox() :ListView.builder(
+
+                scrollDirection: Axis.horizontal,
+                itemCount: CatModel!.data.length,
+                itemBuilder: (context, index) => GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _selectedCat=index;
+                    });
+                  },
+                  child: Container(
+                    margin: EdgeInsets.zero,
+                    padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 2),
+                    decoration: BoxDecoration(
+                        color: AppColors.whit,
+                      border:_selectedCat==index? Border(
+
+                        bottom: BorderSide(width: 3, color: AppColors.primary),
+                      ):null,
+                    ),
+                    child: Column(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(5),
+                          child: SizedBox(
+                              height: 25,
+                              width: 25,
+                              child: CachedNetworkImage(imageUrl: CatModel!.data[index].categoryImage.toString(),fit: BoxFit.cover,)),
+                        ),
+                        const SizedBox(width: 5),
+                        Text('${CatModel!.data[index].categoryName}',style: TextStyle(color: _selectedCat==index?AppColors.primary:AppColors.fntClr,fontSize: 12),)
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+          ),
           title: Image.asset(
             "assets/images/logoText.png",
             height: 30,
@@ -290,19 +225,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 ? const SizedBox.shrink()
                 : InkWell(
                     onTap: () {
-                      Get.toNamed(walletScreen);
+                      // Get.toNamed(walletScreen);
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CouponDiscountScreen(),));
                     },
                     child: Container(
                       height: 32,
                       width: 32,
+                      padding: const EdgeInsets.all(3),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5),
-                        color: Colors.transparent,
+                        color: AppColors.whit,
                       ),
                       child: Image.asset(
-                        "assets/images/wallet.png",
-                        // color: const Color(0XffB6342E),
-                        // scale:.5,
+                        "assets/icons/wallet.png",
                       ),
                     ),
                   ),
@@ -373,7 +308,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               .map(
                                 (item) => Container(
                                   height:
-                                      MediaQuery.of(context).size.height * .13,
+                                      MediaQuery.of(context).size.height * .15,
                                   decoration: BoxDecoration(
                                       image: DecorationImage(
                                           image: NetworkImage(
@@ -385,9 +320,10 @@ class _HomeScreenState extends State<HomeScreen> {
                               .toList(),
                           carouselController: carouselController,
                           options: CarouselOptions(
-                              height: MediaQuery.of(context).size.height * .13,
+                              height: MediaQuery.of(context).size.height * .15,
                               scrollPhysics: const BouncingScrollPhysics(),
                               autoPlay: true,
+                              autoPlayInterval: Duration(seconds: 8),
                               aspectRatio: 1.8,
                               viewportFraction: 1,
                               onPageChanged: (index, reason) {
@@ -401,8 +337,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: _buildDots(),
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * .01),
+
+
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 30),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Container(
                       padding: const EdgeInsets.all(5),
                       height: 40,
@@ -975,7 +913,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         colors: [
                                                       AppColors.greyColor.withOpacity(.1),
                                                       AppColors.greyColor.withOpacity(.5),
-                                                      
+
                                                     ])),
                                                 child: Row(
                                                   mainAxisAlignment:
@@ -1056,40 +994,40 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         // ),
                                                       ],
                                                     ),
-                                                    // Row(
-                                                    //   children: [
-                                                    //     Image.asset(
-                                                    //       "assets/icons/teamIcon.png",
-                                                    //       scale: 1.3,
-                                                    //     ),
-                                                    //     const SizedBox(
-                                                    //       width: 8,
-                                                    //     ),
-                                                    //     Text(
-                                                    //       "Max Coupon".tr,
-                                                    //       style: TextStyle(
-                                                    //           color:
-                                                    //               Colors.black,
-                                                    //           fontSize: 12,
-                                                    //           fontWeight:
-                                                    //               FontWeight
-                                                    //                   .bold),
-                                                    //     ),
-                                                    //     Text(
-                                                    //       "${lotteryModel!.data!.lotteries![index].ticketMaxCount}",
-                                                    //       style: TextStyle(
-                                                    //           color:
-                                                    //               Colors.black,
-                                                    //           fontSize: 12,
-                                                    //           fontWeight:
-                                                    //               FontWeight
-                                                    //                   .bold),
-                                                    //     ),
-                                                    //     const SizedBox(
-                                                    //       width: 10,
-                                                    //     ),
-                                                    //   ],
-                                                    // )
+                                                    Row(
+                                                      children: [
+                                                        Image.asset(
+                                                          "assets/icons/teamIcon.png",
+                                                          scale: 1.3,
+                                                        ),
+                                                        const SizedBox(
+                                                          width: 8,
+                                                        ),
+                                                        Text(
+                                                          "Max Coupon".tr,
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.black,
+                                                              fontSize: 12,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        ),
+                                                        Text(
+                                                          "${lotteryModel!.data!.lotteries![index].ticketMaxCount}",
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.black,
+                                                              fontSize: 12,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        ),
+                                                        const SizedBox(
+                                                          width: 10,
+                                                        ),
+                                                      ],
+                                                    )
                                                   ],
                                                 ),
                                               )
@@ -1293,6 +1231,7 @@ class _TabBarContainerState extends State<TabBarContainer> {
     return GestureDetector(
       onTap: widget.onTap,
       child: Container(
+        alignment: Alignment.center,
         decoration: widget.currentIndex == widget.index
             ? BoxDecoration(
                 borderRadius: BorderRadius.circular(7),
@@ -1309,6 +1248,7 @@ class _TabBarContainerState extends State<TabBarContainer> {
                 boxShadow: const []),
         child: Center(
           child: Text(widget.text,
+              textAlign: TextAlign.center,
               style: TextStyle(
                   color: widget.currentIndex == widget.index
                       ? AppColors.whit

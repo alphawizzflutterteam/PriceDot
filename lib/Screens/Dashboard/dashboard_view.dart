@@ -90,8 +90,8 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                     icon: CURR_USR == '243'
                         ? Icon(Icons.home_filled)
                         : Image.asset(
-                            "assets/icons/logo.png",
-             height: 30,
+                            "assets/icons/pricedot_logo.png",
+             height: 25,
                           ),
                     label: "Home".tr,
                   ),

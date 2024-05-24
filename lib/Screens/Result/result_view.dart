@@ -165,7 +165,7 @@ class _ResultScreenState extends State<ResultScreen> {
                                       SizedBox(
                                         width:
                                             MediaQuery.of(context).size.width *
-                                                .35,
+                                                .34,
                                         child: Text(
                                           "${getResultModel!.data!.lotteries[index].gameName}",
                                           maxLines: 2,

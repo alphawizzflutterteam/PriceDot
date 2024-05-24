@@ -330,13 +330,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             });
                                           },
                                           child: Container(
-                                            height: 40,
+                                            
                                             decoration: getDeco(),
                                             child: Padding(
                                               padding:
                                                   const EdgeInsets.symmetric(
                                                       horizontal: 16,
-                                                      vertical: 8),
+                                                      vertical: 10),
                                               child: Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment
@@ -392,11 +392,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         Get.toNamed(addMoney);
                                       },
                                       child: Container(
-                                        height: 40,
+                                        
                                         decoration: getDeco(),
                                         child: Padding(
                                           padding: const EdgeInsets.symmetric(
-                                              horizontal: 16, vertical: 8),
+                                              horizontal: 16, vertical: 10),
                                           child: Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
@@ -449,11 +449,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             arguments: true);
                                       },
                                       child: Container(
-                                        height: 40,
+                                        
                                         decoration: getDeco(),
                                         child: Padding(
                                           padding: const EdgeInsets.symmetric(
-                                              horizontal: 16, vertical: 8),
+                                              horizontal: 16, vertical: 10),
                                           child: Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
@@ -502,7 +502,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               //     Get.toNamed(invitation);
                               //   },
                               //   child: Container(
-                              //     height: 40,
+                              //     
                               //     decoration: getDeco(),
                               //     child: Padding(
                               //       padding: const EdgeInsets.symmetric(
@@ -555,11 +555,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                     TransactionScreen()));
                                       },
                                       child: Container(
-                                        height: 40,
+                                        
                                         decoration: getDeco(),
                                         child: Padding(
                                           padding: const EdgeInsets.symmetric(
-                                              horizontal: 16, vertical: 8),
+                                              horizontal: 16, vertical: 10),
                                           child: Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
@@ -623,11 +623,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       },
                                       child: Container(
                                         padding: const EdgeInsets.only(left: 8),
-                                        height: 40,
+                                        
                                         decoration: getDeco(),
                                         child: Padding(
                                           padding: const EdgeInsets.symmetric(
-                                              horizontal: 16, vertical: 8),
+                                              horizontal: 16, vertical: 10),
                                           child: Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
@@ -674,11 +674,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       ));
                                 },
                                 child: Container(
-                                  height: 40,
+                                  
                                   decoration: getDeco(),
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
-                                        horizontal: 16, vertical: 8),
+                                        horizontal: 16, vertical: 10),
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
@@ -725,11 +725,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               RefundAndCancellationScreen()));
                                 },
                                 child: Container(
-                                  height: 40,
+                                  
                                   decoration: getDeco(),
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
-                                        horizontal: 16, vertical: 8),
+                                        horizontal: 16, vertical: 10),
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
@@ -748,11 +748,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             const SizedBox(
                                               width: 10,
                                             ),
-                                            Text(
-                                              "Refund & Cancellation".tr,
-                                              style: TextStyle(
-                                                  color: AppColors.fntClr,
-                                                  fontWeight: FontWeight.bold),
+                                            SizedBox(
+                                              width: MediaQuery.of(context).size.width*.7,
+                                              child: Text(
+                                                "Refund & Cancellation".tr,
+                                                style: TextStyle(
+                                                    color: AppColors.fntClr,
+                                                    fontWeight: FontWeight.bold),
+                                              ),
                                             ),
                                           ],
                                         ),
@@ -776,11 +779,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               AboutUsScreen()));
                                 },
                                 child: Container(
-                                  height: 40,
+                                  
                                   decoration: getDeco(),
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
-                                        horizontal: 16, vertical: 8),
+                                        horizontal: 16, vertical: 10),
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
@@ -827,11 +830,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   Get.toNamed(privacyScreen);
                                 },
                                 child: Container(
-                                  height: 40,
+                                  
                                   decoration: getDeco(),
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
-                                        horizontal: 16, vertical: 8),
+                                        horizontal: 16, vertical: 10),
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
@@ -877,11 +880,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   Get.toNamed(termConditionScreen);
                                 },
                                 child: Container(
-                                  height: 40,
+                                  
                                   decoration: getDeco(),
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
-                                        horizontal: 16, vertical: 8),
+                                        horizontal: 16, vertical: 10),
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
@@ -900,11 +903,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             const SizedBox(
                                               width: 10,
                                             ),
-                                            Text(
-                                              "Terms And Condition".tr,
-                                              style: TextStyle(
-                                                  color: AppColors.fntClr,
-                                                  fontWeight: FontWeight.bold),
+                                            SizedBox(
+                                              width: MediaQuery.of(context).size.width*.7,
+                                              child: Text(
+                                                "Terms And Condition".tr,
+                                                style: TextStyle(
+                                                    color: AppColors.fntClr,
+                                                    fontWeight: FontWeight.bold),
+                                              ),
                                             ),
                                           ],
                                         ),
@@ -924,11 +930,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   Get.toNamed(faq);
                                 },
                                 child: Container(
-                                  height: 40,
+                                  
                                   decoration: getDeco(),
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
-                                        horizontal: 16, vertical: 8),
+                                        horizontal: 16, vertical: 10),
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
@@ -975,11 +981,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       ));
                                 },
                                 child: Container(
-                                  height: 40,
+                                  
                                   decoration: getDeco(),
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
-                                        horizontal: 16, vertical: 8),
+                                        horizontal: 16, vertical: 10),
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
@@ -1075,11 +1081,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         );
                                       },
                                       child: Container(
-                                        height: 40,
+                                        
                                         decoration: getDeco(),
                                         child: Padding(
                                           padding: const EdgeInsets.symmetric(
-                                              horizontal: 16, vertical: 8),
+                                              horizontal: 16, vertical: 10),
                                           child: Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,

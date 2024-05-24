@@ -159,7 +159,7 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
                               ? AppColors.whit
                               : AppColors.fntClr,
                           fontWeight: FontWeight.bold,
-                          fontSize: 16)),
+                          fontSize: 14)),
                 ),
               ),
             ),
@@ -201,12 +201,13 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
                 child: Center(
                   child: Text(
                     "Withdrawal List".tr,
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                         color: _currentIndex == 2
                             ? AppColors.whit
                             : AppColors.fntClr,
                         fontWeight: FontWeight.bold,
-                        fontSize: 16),
+                        fontSize: 14),
                   ),
                 ),
               ),

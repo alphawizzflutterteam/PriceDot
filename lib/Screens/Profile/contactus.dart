@@ -118,7 +118,7 @@ class ContactUsScreen extends StatelessWidget {
                   ),
                   SizedBox(width: 15),
                   Text(
-                    "+91 9876543210",
+                    "Call Us".tr,
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   Spacer(),
@@ -160,7 +160,7 @@ class ContactUsScreen extends StatelessWidget {
                   ),
                   SizedBox(width: 15),
                   Text(
-                    "Whatsapp",
+                    "Connect On Whatsapp".tr,
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   Spacer(),
