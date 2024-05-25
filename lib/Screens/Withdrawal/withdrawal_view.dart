@@ -49,6 +49,7 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
   }
 
   String? wallet;
+  String fee='';
   getWalletBallace() async {
     var headers = {
       'Content-Type': 'application/json',
@@ -66,6 +67,7 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
       var finalResult = jsonDecode(result);
       setState(() {
         wallet = finalResult['wallet_balance'];
+        fee = finalResult['convenience_fee'];
       });
     } else {
       print(response.reasonPhrase);
@@ -277,7 +279,7 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
                   ),
                 ],
               ),
-              Text("TTDS".tr),
+              Text("${fee}% convenience fee will be deducted at the time of withdraw"),
               const SizedBox(height: 20.0),
               if (selectedOption == 'UPI')
                 Form(
@@ -573,7 +575,7 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
                   width: double.maxFinite,
                   child: InkWell(
                     onTap: () {
-                      if (widget.isVerified) {
+                      // if (widget.isVerified) {
                         if (selectedOption == 'UPI') {
                           if (_formKey1.currentState!.validate()) {
                             getWithdrawApi();
@@ -584,22 +586,22 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
                             getWithdrawApi();
                           }
                         }
-                      } else {
-                        Fluttertoast.showToast(
-                            msg:
-                                "Please Verify Your Account with KYC to proceed."
-                                    .tr);
-                        Future.delayed(Duration(seconds: 2))
-                            .then((value) => Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => KycScreen(
-                                    adb: '',
-                                    adf: '',
-                                    pan: '',
-                                  ),
-                                )));
-                      }
+                      // } else {
+                      //   Fluttertoast.showToast(
+                      //       msg:
+                      //           "Please Verify Your Account with KYC to proceed."
+                      //               .tr);
+                      //   Future.delayed(Duration(seconds: 2))
+                      //       .then((value) => Navigator.pushReplacement(
+                      //           context,
+                      //           MaterialPageRoute(
+                      //             builder: (context) => KycScreen(
+                      //               adb: '',
+                      //               adf: '',
+                      //               pan: '',
+                      //             ),
+                      //           )));
+                      // }
                     },
                     child: Container(
                       height: 55,

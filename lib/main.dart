@@ -9,11 +9,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_no_internet_widget/flutter_no_internet_widget.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:pricedot/firebase_options.dart';
 import 'Routes/all_pages.dart';
 import 'Routes/routes.dart';
 import 'Routes/screen_bindings.dart';
 import 'Screens/PushNotification/notification_service.dart';
-
+import './firebase_options.dart';
 import 'Services/api_services/TranslationService.dart';
 
 Future<void> backgroundHandler(RemoteMessage message) async {
@@ -28,7 +29,9 @@ void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   await GetStorage.init();
   LocalNotificationService.initialize();
   try {

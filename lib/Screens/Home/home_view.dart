@@ -54,7 +54,6 @@ class _HomeScreenState extends State<HomeScreen> {
     // TODO: implement initState
     super.initState();
     getProfile();
-    init(index: 1);
     getCategory();
     getSlider();
     getResult();
@@ -101,6 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
       var json=jsonDecode(await response.stream.bytesToString());
       if (response.statusCode == 200) {
         CatModel=CategoryModel.fromJson(json);
+        init(index: 1,cat: CatModel!.data[_selectedCat].categoryId.toString());
       }
       else {
         print(response.reasonPhrase);
@@ -117,10 +117,10 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
-  init({required int index}) {
+  init({required int index,required String cat}) {
     print("index $index");
     channel = WebSocketChannel.connect(
-        Uri.parse("ws://alphawizzserver.com:5000?type=${index}"));
+        Uri.parse("ws://alphawizzserver.com:5000?type=${index}&category_id=${cat}"));
   }
 
   String formatDate(String date) {
@@ -161,7 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
 
 
-  int? _currentIndex = 1;
+  int _currentIndex = 1;
   int _selectedCat = 0;
   final CarouselController carouselController = CarouselController();
   @override
@@ -178,13 +178,13 @@ class _HomeScreenState extends State<HomeScreen> {
               color: Colors.white,
               height: kToolbarHeight,
               child:CatModel==null?SizedBox() :ListView.builder(
-
                 scrollDirection: Axis.horizontal,
                 itemCount: CatModel!.data.length,
                 itemBuilder: (context, index) => GestureDetector(
                   onTap: () {
                     setState(() {
                       _selectedCat=index;
+                      init(index: _currentIndex!, cat:CatModel!.data[index].categoryId.toString() );
                     });
                   },
                   child: Container(
@@ -248,10 +248,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: StreamBuilder(
         stream: channel.stream,
         builder: (context, snapshot) {
-          // dev.log('data ${snapshot.data}');
-          // if (snapshot.connectionState == ConnectionState.waiting) {
-          //   return Center(child: CircularProgressIndicator(color: AppColors.primary));
-          // }
+
           if (snapshot.hasError) {
             return Padding(
               padding: const EdgeInsets.all(16.0),
@@ -294,7 +291,7 @@ class _HomeScreenState extends State<HomeScreen> {
               onRefresh: () {
                 return Future.delayed(const Duration(seconds: 2), () {
                   getSlider();
-                  init(index: _currentIndex!.toInt());
+                  init(index: _currentIndex!.toInt(),cat: CatModel!.data[_selectedCat].categoryId.toString());
                   getResult();
                 });
               },
@@ -365,7 +362,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 lotteryModel = null;
                                 setState(() {
                                   _currentIndex = 1;
-                                  init(index: _currentIndex!.toInt());
+                                  init(index: _currentIndex!.toInt(),cat: CatModel!.data[_selectedCat].categoryId.toString());
                                 });
                               },
                             ),
@@ -392,7 +389,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               lotteryModel = null;
                               setState(() {
                                 _currentIndex = 3;
-                                init(index: _currentIndex!.toInt());
+                                init(index: _currentIndex!.toInt(),cat: CatModel!.data[_selectedCat].categoryId.toString());
                               });
                             },
                           )),

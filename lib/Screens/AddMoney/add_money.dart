@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:pricedot/Screens/Splash/splash_controller.dart';
 import 'package:pricedot/Services/api_services/apiConstants.dart';
 import 'package:pricedot/Utils/Colors.dart';
 import 'package:pricedot/Widgets/designConfig.dart';
@@ -275,8 +276,7 @@ class _AddMoneyState extends State<AddMoney> {
                               } else if (value.length < 3) {
                                 Fluttertoast.showToast(
                                     msg:
-                                        "Please enter a withdrawal amount between ₹100 and ₹10000, as per the maximum limit allowed on draw money"
-                                            .tr);
+                                        "Please enter a withdrawal amount between ₹100 and ₹10000, as per the maximum limit allowed on Prizedot");
                               }
                               return null;
                             },
@@ -292,22 +292,22 @@ class _AddMoneyState extends State<AddMoney> {
                             ),
                             controller: amtC,
                           )),
-                      Padding(
-                          padding: EdgeInsets.fromLTRB(20.0, 0, 20.0, 0),
-                          child: TextFormField(
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
-                            style: const TextStyle(
-                              color: AppColors.activeBorder,
-                            ),
-                            decoration: InputDecoration(
-                              hintText: "Message".tr,
-                              hintStyle: TextStyle(
-                                  color: AppColors.primary,
-                                  fontWeight: FontWeight.normal),
-                            ),
-                            controller: msgC,
-                          )),
+                      // Padding(
+                      //     padding: EdgeInsets.fromLTRB(20.0, 0, 20.0, 0),
+                      //     child: TextFormField(
+                      //       autovalidateMode:
+                      //           AutovalidateMode.onUserInteraction,
+                      //       style: const TextStyle(
+                      //         color: AppColors.activeBorder,
+                      //       ),
+                      //       decoration: InputDecoration(
+                      //         hintText: "Message".tr,
+                      //         hintStyle: TextStyle(
+                      //             color: AppColors.primary,
+                      //             fontWeight: FontWeight.normal),
+                      //       ),
+                      //       controller: msgC,
+                      //     )),
                       //Divider(),
                       // Padding(
                       //   padding: EdgeInsets.fromLTRB(20.0, 10, 20.0, 5),
@@ -339,7 +339,7 @@ class _AddMoneyState extends State<AddMoney> {
             ),
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-                getTransactionUrl();
+             addMoney().then((value) => Navigator.pop(ctx));
               }
               //  openCheckout(amtC.text);
             })
@@ -347,52 +347,28 @@ class _AddMoneyState extends State<AddMoney> {
     );
   }
 
-  String? paymentUrl;
+  Future<void> addMoney()async{
+    try{
 
-  getTransactionUrl() async {
-    var request = http.Request(
-        'Get',
-        Uri.parse(
-            '$baseUrl1/Apicontroller/get_payment?amount=${amtC.text}&user_id=$userId&payment_for=wallet&game_id='));
-
-    http.StreamedResponse response = await request.send();
-    print('${response.statusCode}___________');
-
-    if (response.statusCode == 200) {
-      final result = await response.stream.bytesToString();
-      print(result);
-      final jsonResponse = jsonDecode(result);
-      print(jsonResponse.toString());
-      if (jsonResponse['status_code'] == 200) {
-        paymentUrl = jsonResponse['data']['intent_link'];
-
-        launchUPI(paymentUrl ?? '');
-      } else {
-        Fluttertoast.showToast(msg: "${jsonResponse['message']}");
-      }
-    } else {
-      print(response.reasonPhrase);
-      setState(() {
-        //isLoading = false;
+      var request = http.MultipartRequest('POST', Uri.parse('${baseUrl}Apicontroller/apiAddMoneyViaUpi'));
+      request.fields.addAll({
+        'user_id': CURR_USR.toString(),
+        'amount': amtC.text,
+        'txn_id': DateTime.now().millisecondsSinceEpoch.toString()
       });
-    }
-  }
-
-  void launchUPI(String link) async {
-    try {
-      var result = await launch(link);
-      debugPrint(result.toString());
-      if (result == true) {
-        print("Done");
-        // buyLotteryApi();
-      } else if (result == false) {
-        print("Fail");
+      http.StreamedResponse response = await request.send();
+     var json=jsonDecode(await response.stream.bytesToString());
+      if (response.statusCode == 200&& json['status']) {
+        balanceUser();
+        Fluttertoast.showToast(msg: json['msg']);
       }
-      Fluttertoast.showToast(
-          msg: "Wallet will be update once the transaction is confirmed");
-    } catch (e) {
-      Fluttertoast.showToast(
-          msg: "Unable to open UPI app. Please try again later");
+      else {
+        Fluttertoast.showToast(msg: json['msg']);
+        print(response.reasonPhrase);
+      }
+
+    }catch(e){
+      throw Exception(e);
     }
   }
 

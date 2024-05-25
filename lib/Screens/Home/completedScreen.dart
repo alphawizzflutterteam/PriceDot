@@ -2,6 +2,7 @@ import 'package:pricedot/Utils/Colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:pricedot/Widgets/designConfig.dart';
 
 import '../../Models/HomeModel/lottery_model.dart';
 
@@ -15,6 +16,7 @@ class CompletedScreen extends StatelessWidget {
         appBar: AppBar(
           automaticallyImplyLeading: false,
           //toolbarHeight: 60,
+          flexibleSpace: FlexibleSpace,
           centerTitle: true,
           title: Row(
             mainAxisSize: MainAxisSize.min,
@@ -64,7 +66,7 @@ class CompletedScreen extends StatelessWidget {
               padding: const EdgeInsets.all(10),
               height: MediaQuery.of(context).size.height * .12,
               decoration: BoxDecoration(
-                  color: AppColors.secondary1,
+                  color: AppColors.secondary1.withOpacity(.8),
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(20),
                     bottomRight: Radius.circular(20),

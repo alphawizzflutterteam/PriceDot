@@ -121,14 +121,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
     try {
       userId = await SharedPre.getStringValue('userId');
       var request = http.MultipartRequest('POST',
-          Uri.parse('${baseUrl}/delete_account'));
+          Uri.parse('${baseUrl}/Apicontroller/delete_account'));
       request.fields.addAll({'user_id': userId.toString()});
       http.StreamedResponse response = await request.send();
       var json = jsonDecode(await response.stream.bytesToString());
       if (response.statusCode == 200) {
         if (json['status'] == true) {
           Fluttertoast.showToast(msg: json['message']);
-          await SharedPre.clear('userId');
+          await SharedPre.setValue(SharedPre.isLogin,false);
+
           await Future.delayed(const Duration(milliseconds: 500));
           Navigator.pop(context);
           Get.offAllNamed(loginScreen);
@@ -248,26 +249,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         fontWeight: FontWeight.bold,
                                         color: AppColors.fntClr),
                                   )),
-                                  getProfileModel!.profile!.verified == '1'
-                                      ? Center(
-                                          child: Row(
-                                          children: [
-                                            Image.asset(
-                                              'assets/icons/verify .png',
-                                              height: 20,
-                                              width: 20,
-                                            ),
-                                            const SizedBox(width: 3),
-                                            const Text(
-                                              "Verified",
-                                              style: TextStyle(
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: AppColors.fntClr),
-                                            ),
-                                          ],
-                                        ))
-                                      : const SizedBox.shrink(),
+                                  // getProfileModel!.profile!.verified == '1'
+                                  //     ? Center(
+                                  //         child: Row(
+                                  //         children: [
+                                  //           Image.asset(
+                                  //             'assets/icons/verify .png',
+                                  //             height: 20,
+                                  //             width: 20,
+                                  //           ),
+                                  //           const SizedBox(width: 3),
+                                  //           const Text(
+                                  //             "Verified",
+                                  //             style: TextStyle(
+                                  //                 fontSize: 15,
+                                  //                 fontWeight: FontWeight.w500,
+                                  //                 color: AppColors.fntClr),
+                                  //           ),
+                                  //         ],
+                                  //       ))
+                                  //     : const SizedBox.shrink(),
                                   Center(
                                       child: GestureDetector(
                                           onTap: () {
@@ -302,84 +303,84 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              getProfileModel!.profile!.verified == '1'
-                                  ? const SizedBox.shrink()
-                                  : CURR_USR == '243'
-                                      ? const SizedBox.shrink()
-                                      : GestureDetector(
-                                          onTap: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      KycScreen(
-                                                    adb: getProfileModel
-                                                            ?.profile?.adb ??
-                                                        '',
-                                                    adf: getProfileModel
-                                                            ?.profile?.adf ??
-                                                        '',
-                                                    pan: getProfileModel
-                                                            ?.profile?.pan ??
-                                                        '',
-                                                  ),
-                                                )).then((val) {
-                                              if (val) {
-                                                getProfile();
-                                              }
-                                            });
-                                          },
-                                          child: Container(
-                                            
-                                            decoration: getDeco(),
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 16,
-                                                      vertical: 10),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Row(
-                                                    children: [
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(left: 6),
-                                                        child: Image.asset(
-                                                          "assets/icons/kyc.png",
-                                                          height: 20,
-                                                          color: AppColors
-                                                              .iconColor,
-                                                        ),
-                                                      ),
-                                                      const SizedBox(
-                                                        width: 10,
-                                                      ),
-                                                      Text(
-                                                        "KYC".tr,
-                                                        style: TextStyle(
-                                                            color: AppColors
-                                                                .fntClr,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  const Icon(
-                                                    Icons
-                                                        .arrow_forward_ios_outlined,
-                                                    color: AppColors.greyColor,
-                                                    size: 17,
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
+                              // getProfileModel!.profile!.verified == '1'
+                              //     ? const SizedBox.shrink()
+                              //     : CURR_USR == '243'
+                              //         ? const SizedBox.shrink()
+                              //         : GestureDetector(
+                              //             onTap: () {
+                              //               Navigator.push(
+                              //                   context,
+                              //                   MaterialPageRoute(
+                              //                     builder: (context) =>
+                              //                         KycScreen(
+                              //                       adb: getProfileModel
+                              //                               ?.profile?.adb ??
+                              //                           '',
+                              //                       adf: getProfileModel
+                              //                               ?.profile?.adf ??
+                              //                           '',
+                              //                       pan: getProfileModel
+                              //                               ?.profile?.pan ??
+                              //                           '',
+                              //                     ),
+                              //                   )).then((val) {
+                              //                 if (val) {
+                              //                   getProfile();
+                              //                 }
+                              //               });
+                              //             },
+                              //             child: Container(
+                              //
+                              //               decoration: getDeco(),
+                              //               child: Padding(
+                              //                 padding:
+                              //                     const EdgeInsets.symmetric(
+                              //                         horizontal: 16,
+                              //                         vertical: 10),
+                              //                 child: Row(
+                              //                   mainAxisAlignment:
+                              //                       MainAxisAlignment
+                              //                           .spaceBetween,
+                              //                   children: [
+                              //                     Row(
+                              //                       children: [
+                              //                         Padding(
+                              //                           padding:
+                              //                               const EdgeInsets
+                              //                                   .only(left: 6),
+                              //                           child: Image.asset(
+                              //                             "assets/icons/kyc.png",
+                              //                             height: 20,
+                              //                             color: AppColors
+                              //                                 .iconColor,
+                              //                           ),
+                              //                         ),
+                              //                         const SizedBox(
+                              //                           width: 10,
+                              //                         ),
+                              //                         Text(
+                              //                           "KYC".tr,
+                              //                           style: TextStyle(
+                              //                               color: AppColors
+                              //                                   .fntClr,
+                              //                               fontWeight:
+                              //                                   FontWeight
+                              //                                       .bold),
+                              //                         ),
+                              //                       ],
+                              //                     ),
+                              //                     const Icon(
+                              //                       Icons
+                              //                           .arrow_forward_ios_outlined,
+                              //                       color: AppColors.greyColor,
+                              //                       size: 17,
+                              //                     )
+                              //                   ],
+                              //                 ),
+                              //               ),
+                              //             ),
+                              //           ),
 
                               const SizedBox(
                                 height: 8,

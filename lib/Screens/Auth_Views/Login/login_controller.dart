@@ -87,8 +87,8 @@ class LoginController extends AppBaseController {
 
     var param = {
       'mobile': mobile,
-      'app_key':
-          "#63Y@#)KLO57991(\$457D9(JE4dY3d2250f\$%#(mhgamesapp!xyz!punjablottery)8fm834(HKU8)5grefgr48mg1",
+      // 'app_key':
+      //     "#63Y@#)KLO57991(\$457D9(JE4dY3d2250f\$%#(mhgamesapp!xyz!punjablottery)8fm834(HKU8)5grefgr48mg1",
       'referral_code': referral_code
     };
     print('login functuion----');
@@ -99,7 +99,7 @@ class LoginController extends AppBaseController {
       int? otp = getData['otp'];
       if (status) {
         Fluttertoast.showToast(msg: msg);
-        Get.toNamed(otpScreen, arguments: [mobile, 0]);
+        Get.toNamed(otpScreen, arguments: [mobile, otp]);
         update();
         isLoading = false;
       } else {

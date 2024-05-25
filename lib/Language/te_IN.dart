@@ -51,7 +51,7 @@ const teIN='''{
   "Change Language": "భాష మార్చు",
   "Refund & Cancellation": "వాపసు & రద్దు",
   "Coupon Left": "కూపన్ ఎడమ",
-  "PAY BY WALLET": "వాలెట్ ద్వారా చెల్లించండి",
+  "PAY BY WALLET": "చెల్లించండి",
   "Waiting...": "వేచి ఉంది...",
   "Max Coupon": "గరిష్ట కూపన్: ",
   "TAP NOW": "ఇప్పుడు నొక్కండి",

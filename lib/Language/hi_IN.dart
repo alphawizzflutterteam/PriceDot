@@ -54,7 +54,7 @@ const hiIN = '''{
     "End":"अंत: ",
     "Waiting...":"इंतज़ार में...",
     "Coupon Left": "कूपन बचा है",
-    "PAY BY WALLET": "वॉलेट से भुगतान करें",
+    "PAY BY WALLET": "भुगतान करें",
     "TAP NOW": "अब टैप करें",
     "BUY NOW": "अभी खरीदें",
     "No Lottery List!!!": "कोई लॉटरी सूची नहीं है!!!",
