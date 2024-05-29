@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
+import '../../Utils/PrefUtils.dart';
+
 String CURR_USR = '';
 
 class SplashController extends AppBaseController {
@@ -37,9 +39,9 @@ class SplashController extends AppBaseController {
   checkLogin() async {
     Timer(const Duration(seconds: 3), () async {
       var id = await SharedPre.getStringValue('userId');
-      String lang = await SharedPre.getStringValue(SharedPre.language);
+      String lang = PreferenceUtils.getString(PrefKeys.language);
       CURR_USR = id;
-      final isLogin = await SharedPre.getBoolValue(SharedPre.isLogin);
+      String isLogin = PreferenceUtils.getString(PrefKeys.isLogin);
       print('is login-----${isLogin}  Lang: $lang');
       switch (lang.toString()) {
         case "1":
@@ -55,7 +57,7 @@ class SplashController extends AppBaseController {
           Get.updateLocale(Locale('en', 'US'));
           break;
       }
-      if (isLogin) {
+      if (isLogin=='true') {
         Get.offAllNamed(bottomBar);
       } else {
         Get.offAllNamed(selectLang);

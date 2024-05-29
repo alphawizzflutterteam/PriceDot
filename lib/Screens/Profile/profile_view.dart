@@ -11,6 +11,7 @@ import 'package:pricedot/Screens/Profile/profile_controller.dart';
 import 'package:pricedot/Screens/Splash/splash_controller.dart';
 import 'package:pricedot/Screens/Withdrawal/withdrawal_view.dart';
 import 'package:pricedot/Utils/Colors.dart';
+import 'package:pricedot/Utils/PrefUtils.dart';
 import 'package:pricedot/Utils/custom_clip_path.dart';
 import 'package:pricedot/Widgets/button.dart';
 import 'package:pricedot/Widgets/commen_widgets.dart';
@@ -73,7 +74,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         getProfileModel = null;
       });
       var request = http.Request(
-          'POST', Uri.parse('$baseUrl1/Apicontroller/apiGetProfile'));
+          'POST', Uri.parse('${baseUrl1}Apicontroller/apiGetProfile'));
       request.body = json.encode({"user_id": userId.toString()});
       print(request.body);
       http.StreamedResponse response = await request.send();
@@ -128,7 +129,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       if (response.statusCode == 200) {
         if (json['status'] == true) {
           Fluttertoast.showToast(msg: json['message']);
-          await SharedPre.setValue(SharedPre.isLogin,false);
+          await PreferenceUtils.setString(PrefKeys.isLogin, 'false');
 
           await Future.delayed(const Duration(milliseconds: 500));
           Navigator.pop(context);
@@ -1160,8 +1161,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               backgroundColor: AppColors.buttonColor,
                                             ),
                                             onPressed: () async {
-                                              SharedPre.setValue(
-                                                  SharedPre.isLogin, false);
+                                            await PreferenceUtils.setString(PrefKeys.isLogin, 'false');
                                               await Future.delayed(
                                                   const Duration(
                                                       milliseconds: 500));

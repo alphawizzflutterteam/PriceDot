@@ -9,6 +9,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:pricedot/Utils/PrefUtils.dart';
 import '../../../Routes/routes.dart';
 
 class OTPVerifyController extends AppBaseController {
@@ -52,6 +53,7 @@ class OTPVerifyController extends AppBaseController {
         SharedPre.setValue('balanceUser', getData['wallet_balance']);
         SharedPre.setValue('userId', getData['user_id'].toString());
         SharedPre.setValue(SharedPre.isLogin, true);
+       await PreferenceUtils.setString(PrefKeys.isLogin, "true");
         var id = await SharedPre.getStringValue('userId');
         CURR_USR = id;
         print('______getData____${getData['wallet_balance']}_________');

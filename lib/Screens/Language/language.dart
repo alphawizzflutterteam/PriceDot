@@ -1,5 +1,6 @@
 import 'package:pricedot/Local_Storage/shared_pre.dart';
 import 'package:pricedot/Routes/routes.dart';
+import 'package:pricedot/Utils/PrefUtils.dart';
 import 'package:pricedot/Utils/session.dart';
 import 'package:pricedot/Widgets/designConfig.dart';
 import 'package:pricedot/main.dart';
@@ -20,7 +21,7 @@ class LanguageScreen extends StatefulWidget {
 class _LanguageScreenState extends State<LanguageScreen> {
   String selectedLang = "2";
   getlang() async {
-    selectedLang = await SharedPre.getStringValue(SharedPre.language) ?? "2";
+    selectedLang =PreferenceUtils.getString(PrefKeys.language);
     print(selectedLang);
     setState(() {});
   }
@@ -244,9 +245,12 @@ class _LanguageScreenState extends State<LanguageScreen> {
                       break;
                   }
                   print(selectedLang);
-                  await SharedPre.setValue(SharedPre.language, selectedLang);
-                  String n = await SharedPre.getStringValue(SharedPre.language);
-                  print(n + "...........");
+                  await PreferenceUtils.setString(PrefKeys.language, selectedLang);
+                  var lang=PreferenceUtils.getString(PrefKeys.language);
+                  print("Pref Lang is : $lang");
+                  // await SharedPre.setValue(SharedPre.language, selectedLang);
+                  // String n = await SharedPre.getStringValue(SharedPre.language);
+                  // print(n + "...........");
                   widget.isProfile
                       ? Navigator.pop(context)
                       : Get.toNamed(loginScreen);

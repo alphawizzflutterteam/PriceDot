@@ -52,6 +52,7 @@ dependencies:
   fluttertoast: ^8.2.2
   get: ^4.6.6
   get_storage: ^2.1.1
+  shared_preferences: ^2.2.3
   http: ^1.1.0
   image_cropper: ^5.0.1
   image_picker: null

@@ -16,6 +16,7 @@ import 'Routes/screen_bindings.dart';
 import 'Screens/PushNotification/notification_service.dart';
 import './firebase_options.dart';
 import 'Services/api_services/TranslationService.dart';
+import 'Utils/PrefUtils.dart';
 
 Future<void> backgroundHandler(RemoteMessage message) async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,7 +29,7 @@ void main() async {
   runApp(const MyApp());
 
   WidgetsFlutterBinding.ensureInitialized();
-
+  await PreferenceUtils.init();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
