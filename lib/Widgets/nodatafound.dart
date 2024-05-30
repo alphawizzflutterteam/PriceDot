@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pricedot/Utils/PrefUtils.dart';
 
 import '../Local_Storage/shared_pre.dart';
 
@@ -12,7 +13,7 @@ class NoDataFound extends StatefulWidget {
 class _NoDataFoundState extends State<NoDataFound> {
   String image = '';
   Future<void> getImage() async {
-    String lang = await SharedPre.getStringValue(SharedPre.language);
+    String lang = PreferenceUtils.getString(PrefKeys.language);
     print("Language.... $lang");
     switch (lang.toString()) {
       case "1":

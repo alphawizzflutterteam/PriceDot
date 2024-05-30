@@ -15,6 +15,7 @@ import 'package:pricedot/Screens/Home/completedScreen.dart';
 import 'package:pricedot/Screens/Splash/splash_controller.dart';
 import 'package:pricedot/Screens/Winner/WinnerViewNew.dart';
 import 'package:pricedot/Utils/Colors.dart';
+import 'package:pricedot/Utils/PrefUtils.dart';
 import 'package:pricedot/Widgets/commen_widgets.dart';
 import 'package:pricedot/Widgets/designConfig.dart';
 import 'package:pricedot/Widgets/nodatafound.dart';
@@ -53,8 +54,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    my=getCategory();
     getProfile();
-    getCategory();
     getSlider();
     getResult();
     getImage();
@@ -116,11 +117,11 @@ class _HomeScreenState extends State<HomeScreen> {
     channel.sink.close();
     super.dispose();
   }
-
+ late Future my;
   init({required int index,required String cat}) {
     print("index $index");
     channel = WebSocketChannel.connect(
-        Uri.parse("ws://alphawizzserver.com:5000?type=${index}&category_id=${cat}"));
+        Uri.parse("ws://alphawizzserver.com:5000?type=${index}&category_id=${cat}&user_id=${CURR_USR.toString()}"));
   }
 
   String formatDate(String date) {
@@ -137,7 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   String image = '';
   getImage() async {
-    String lang = await SharedPre.getStringValue(SharedPre.language);
+    String lang = PreferenceUtils.getString(PrefKeys.language);
     print("Language.... $lang");
     switch (lang.toString()) {
       case "1":
@@ -171,51 +172,7 @@ class _HomeScreenState extends State<HomeScreen> {
           backgroundColor: AppColors.primary,
           flexibleSpace: FlexibleSpace,
           automaticallyImplyLeading: false,
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(kToolbarHeight),
-            child:  Container(
-              padding: const EdgeInsets.only(top: 5),
-              color: Colors.white,
-              height: kToolbarHeight,
-              child:CatModel==null?SizedBox() :ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: CatModel!.data.length,
-                itemBuilder: (context, index) => GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _selectedCat=index;
-                      init(index: _currentIndex!, cat:CatModel!.data[index].categoryId.toString() );
-                    });
-                  },
-                  child: Container(
-                    margin: EdgeInsets.zero,
-                    padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 2),
-                    decoration: BoxDecoration(
-                        color: AppColors.whit,
-                      border:_selectedCat==index? Border(
 
-                        bottom: BorderSide(width: 3, color: AppColors.primary),
-                      ):null,
-                    ),
-                    child: Column(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(5),
-                          child: SizedBox(
-                              height: 25,
-                              width: 25,
-                              child: CachedNetworkImage(imageUrl: CatModel!.data[index].categoryImage.toString(),fit: BoxFit.cover,)),
-                        ),
-                        const SizedBox(width: 5),
-                        Text('${CatModel!.data[index].categoryName}',style: TextStyle(color: _selectedCat==index?AppColors.primary:AppColors.fntClr,fontSize: 12),)
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-
-          ),
           title: Image.asset(
             "assets/images/logoText.png",
             height: 30,
@@ -245,803 +202,848 @@ class _HomeScreenState extends State<HomeScreen> {
               width: 10,
             ),
           ]),
-      body: StreamBuilder(
-        stream: channel.stream,
-        builder: (context, snapshot) {
-
-          if (snapshot.hasError) {
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox.square(
-                      dimension: MediaQuery.of(context).size.height * .35,
-                      child: Image.asset('assets/icons/error.gif')),
-                  Text(
-                    "Oops! Something went wrong on our end. Our team is already on it, trying to fix the issue. Please try again later. We apologize for any inconvenience this may have caused.",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  )
-                ],
-              ),
-            );
-          }
-
-          if (snapshot.hasData) {
-            lotteryModel =
-                LotteryModel.fromJson(jsonDecode(snapshot.data.toString()));
-            int minutesBetween(DateTime from, DateTime to) =>
-                (to.difference(from).inSeconds).round();
-            differenceList = [];
-            if (_currentIndex == 2 || _currentIndex == 1) {
-              lotteryModel?.data?.lotteries?.forEach((element) {
-                var date1 = DateTime.parse(element.openingTime.toString());
-                var date2 = DateTime.now();
-                int? difference = minutesBetween(date2, date1);
-                // print('${difference}___________difference___');
-                getTimer(difference);
-              });
-            }
-            return RefreshIndicator(
-              color: AppColors.primary,
-              onRefresh: () {
-                return Future.delayed(const Duration(seconds: 2), () {
-                  getSlider();
-                  init(index: _currentIndex!.toInt(),cat: CatModel!.data[_selectedCat].categoryId.toString());
-                  getResult();
-                });
-              },
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  getSliderModel == null
-                      ? SizedBox.shrink()
-                      : CarouselSlider(
-                          items: getSliderModel!.sliderdata!
-                              .map(
-                                (item) => Container(
-                                  height:
-                                      MediaQuery.of(context).size.height * .15,
-                                  decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          image: NetworkImage(
-                                            "${item.sliderImage}",
-                                          ),
-                                          fit: BoxFit.fill)),
-                                ),
-                              )
-                              .toList(),
-                          carouselController: carouselController,
-                          options: CarouselOptions(
-                              height: MediaQuery.of(context).size.height * .15,
-                              scrollPhysics: const BouncingScrollPhysics(),
-                              autoPlay: true,
-                              autoPlayInterval: Duration(seconds: 8),
-                              aspectRatio: 1.8,
-                              viewportFraction: 1,
-                              onPageChanged: (index, reason) {
-                                setState(() {
-                                  _currentPost = index;
-                                });
-                              })),
-                  // SizedBox(height: MediaQuery.of(context).size.height * .005),
-                  Row(
+      body: FutureBuilder(
+        future: my,
+        builder: (context,snap) {
+          return snap.connectionState==ConnectionState.waiting?Center(child: CircularProgressIndicator(color: AppColors.primary,),) :StreamBuilder(
+            stream: channel.stream,
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: _buildDots(),
+                    children: [
+                      SizedBox.square(
+                          dimension: MediaQuery.of(context).size.height * .35,
+                          child: Image.asset('assets/icons/error.gif')),
+                      Text(
+                        "Oops! Something went wrong on our end. Our team is already on it, trying to fix the issue. Please try again later. We apologize for any inconvenience this may have caused.",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      )
+                    ],
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height * .01),
+                );
+              }
 
-
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Container(
-                      padding: const EdgeInsets.all(5),
-                      height: 40,
-                      decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              color: Color(0xFF000000).withOpacity(.12),
-                              offset: Offset(0, 3),
-                              blurRadius: 8,
-                            ),
-                          ],
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(7)),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: TabBarContainer(
-                              currentIndex: _currentIndex,
-                              text: "Today".tr,
-                              index: 1,
-                              onTap: () {
-                                lotteryModel = null;
-                                setState(() {
-                                  _currentIndex = 1;
-                                  init(index: _currentIndex!.toInt(),cat: CatModel!.data[_selectedCat].categoryId.toString());
-                                });
-                              },
-                            ),
-                          ),
-                          // Expanded(
-                          //     child: TabBarContainer(
-                          //   currentIndex: _currentIndex,
-                          //   text: "Upcoming".tr,
-                          //   index: 2,
-                          //   onTap: () {
-                          //     lotteryModel = null;
-                          //     setState(() {
-                          //       _currentIndex = 2;
-                          //       init(index: _currentIndex!.toInt());
-                          //     });
-                          //   },
-                          // )),
-                          Expanded(
-                              child: TabBarContainer(
-                            currentIndex: _currentIndex,
-                            text: "Completed".tr,
-                            index: 3,
+              if (snapshot.hasData) {
+                lotteryModel =
+                    LotteryModel.fromJson(jsonDecode(snapshot.data.toString()));
+                // int minutesBetween(DateTime from, DateTime to) =>
+                //     (to.difference(from).inSeconds).round();
+                // differenceList = [];
+                // if (_currentIndex == 2 || _currentIndex == 1) {
+                //   lotteryModel?.data?.lotteries?.forEach((element) {
+                //     var date1 = DateTime.parse(element.openingTime.toString());
+                //     var date2 = DateTime.now();
+                //     int? difference = minutesBetween(date2, date1);
+                //     // print('${difference}___________difference___');
+                //     getTimer(difference);
+                //   });
+                // }
+                return RefreshIndicator(
+                  color: AppColors.primary,
+                  onRefresh: () {
+                    return Future.delayed(const Duration(seconds: 2), () {
+                      getSlider();
+                      init(index: _currentIndex,cat: CatModel!.data[_selectedCat].categoryId.toString());
+                      getResult();
+                    });
+                  },
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.only(top: 5),
+                        color: Colors.white,
+                        height: kToolbarHeight,
+                        child:CatModel==null?SizedBox() :ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: CatModel!.data.length,
+                          itemBuilder: (context, index) => GestureDetector(
                             onTap: () {
-                              lotteryModel = null;
                               setState(() {
-                                _currentIndex = 3;
-                                init(index: _currentIndex!.toInt(),cat: CatModel!.data[_selectedCat].categoryId.toString());
+                                _selectedCat=index;
+                                init(index: _currentIndex,cat:CatModel!.data[index].categoryId.toString() );
                               });
                             },
-                          )),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: MediaQuery.of(context).size.height * .01),
-                  Expanded(
-                    flex: 8,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: snapshot.connectionState == ConnectionState.waiting
-                          ? Center(
-                              child: CircularProgressIndicator(
-                                  color: AppColors.primary))
-                          : lotteryModel?.data?.lotteries?.length == 0
-                              ? Center(
-                                  child: Image.asset(
-                                    image,
-                                    height:
-                                        MediaQuery.of(context).size.height * .3,
+                            child: Container(
+                              margin: EdgeInsets.zero,
+                              padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 2),
+                              decoration: BoxDecoration(
+                                color: AppColors.whit,
+                                border:_selectedCat==index? Border(
+
+                                  bottom: BorderSide(width: 3, color: AppColors.primary),
+                                ):null,
+                              ),
+                              child: Column(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(5),
+                                    child: SizedBox(
+                                        height: 25,
+                                        width: 25,
+                                        child: CachedNetworkImage(imageUrl: CatModel!.data[index].categoryImage.toString(),fit: BoxFit.cover,)),
                                   ),
-                                )
-                              : ListView.builder(
-                                  shrinkWrap: true,
-                                  itemCount:
-                                      lotteryModel?.data?.lotteries?.length ??
-                                          0,
-                                  // itemCount:2,
-                                  itemBuilder: (context, index) {
-                                    return GestureDetector(
-                                      onTap: () {
-                                        if (lotteryModel!
-                                                .data!.lotteries![index].type ==
-                                            "3") {
-                                          if (lotteryModel!
-                                                  .data!
-                                                  .lotteries![index]
-                                                  .resultStatus ==
-                                              '1') {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      CompletedScreen(
-                                                    lot: lotteryModel!.data!
-                                                        .lotteries![index],
-                                                  ),
-                                                ));
-                                          } else {
-                                            Fluttertoast.showToast(
-                                                msg:
-                                                    "Result will be declared soon, stay tuned in draw money app"
-                                                        .tr);
-                                          }
-                                        } else {
-                                          if (lotteryModel!.data!
-                                                  .lotteries![index].active ==
-                                              '1') {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        WinnerScreenNew(
-                                                          gId: lotteryModel
-                                                              ?.data
-                                                              ?.lotteries?[
-                                                                  index]
-                                                              .gameId,
-                                                          sport: lotteryModel
-                                                              ?.data
-                                                              ?.lotteries?[
-                                                                  index]
-                                                              .ticketCount,
-                                                          sportLeft:
-                                                              lotteryModel
+                                  const SizedBox(width: 5),
+                                  Text('${CatModel!.data[index].categoryName}',style: TextStyle(color: _selectedCat==index?AppColors.primary:AppColors.fntClr,fontSize: 12),)
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      getSliderModel == null
+                          ? SizedBox.shrink()
+                          : CarouselSlider(
+                              items: getSliderModel!.sliderdata!
+                                  .map(
+                                    (item) => Container(
+                                      height:
+                                          MediaQuery.of(context).size.height * .15,
+                                      decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                              image: NetworkImage(
+                                                "${item.sliderImage}",
+                                              ),
+                                              fit: BoxFit.fill)),
+                                    ),
+                                  )
+                                  .toList(),
+                              carouselController: carouselController,
+                              options: CarouselOptions(
+                                  height: MediaQuery.of(context).size.height * .15,
+                                  scrollPhysics: const BouncingScrollPhysics(),
+                                  autoPlay: true,
+                                  autoPlayInterval: Duration(seconds: 8),
+                                  aspectRatio: 1.8,
+                                  viewportFraction: 1,
+                                  onPageChanged: (index, reason) {
+                                    setState(() {
+                                      _currentPost = index;
+                                    });
+                                  })),
+                      // SizedBox(height: MediaQuery.of(context).size.height * .005),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: _buildDots(),
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height * .01),
+
+
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Container(
+                          padding: const EdgeInsets.all(5),
+                          height: 40,
+                          decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Color(0xFF000000).withOpacity(.12),
+                                  offset: Offset(0, 3),
+                                  blurRadius: 8,
+                                ),
+                              ],
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(7)),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TabBarContainer(
+                                  currentIndex: _currentIndex,
+                                  text: "Today".tr,
+                                  index: 1,
+                                  onTap: () {
+                                    lotteryModel = null;
+                                    setState(() {
+                                      _currentIndex = 1;
+                                      init(index: _currentIndex!.toInt(),cat: CatModel!.data[_selectedCat].categoryId.toString());
+                                    });
+                                  },
+                                ),
+                              ),
+                              Expanded(
+                                  child: TabBarContainer(
+                                currentIndex: _currentIndex,
+                                text: "Upcoming".tr,
+                                index: 2,
+                                onTap: () {
+                                  lotteryModel = null;
+                                  setState(() {
+                                    _currentIndex = 2;
+                                    init(index: _currentIndex.toInt(),cat: CatModel!.data[_selectedCat].categoryId.toString());
+                                  });
+                                },
+                              )),
+                              // Expanded(
+                              //     child: TabBarContainer(
+                              //   currentIndex: _currentIndex,
+                              //   text: "Completed".tr,
+                              //   index: 3,
+                              //   onTap: () {
+                              //     lotteryModel = null;
+                              //     setState(() {
+                              //       _currentIndex = 3;
+                              //       init(index: _currentIndex!.toInt(),cat: CatModel!.data[_selectedCat].categoryId.toString());
+                              //     });
+                              //   },
+                              // )),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height * .01),
+                      Expanded(
+                        flex: 8,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: snapshot.connectionState == ConnectionState.waiting
+                              ? Center(
+                                  child: CircularProgressIndicator(
+                                      color: AppColors.primary))
+                              : lotteryModel?.data?.lotteries?.length == 0
+                                  ? Center(
+                                      child: Image.asset(
+                                        image,
+                                        height:
+                                            MediaQuery.of(context).size.height * .3,
+                                      ),
+                                    )
+                                  : ListView.builder(
+                                      shrinkWrap: true,
+                                      itemCount:
+                                          lotteryModel?.data?.lotteries?.length ??
+                                              0,
+                                      // itemCount:2,
+                                      itemBuilder: (context, index) {
+                                        return GestureDetector(
+                                          onTap: () {
+                                            if (lotteryModel!
+                                                    .data!.lotteries![index].type ==
+                                                "3") {
+                                              if (lotteryModel!
+                                                      .data!
+                                                      .lotteries![index]
+                                                      .resultStatus ==
+                                                  '1') {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          CompletedScreen(
+                                                        lot: lotteryModel!.data!
+                                                            .lotteries![index],
+                                                      ),
+                                                    ));
+                                              } else {
+                                                Fluttertoast.showToast(
+                                                    msg:
+                                                        "Result will be declared soon, stay tuned in draw money app"
+                                                            .tr);
+                                              }
+                                            } else {
+                                              if (lotteryModel!.data!
+                                                      .lotteries![index].active ==
+                                                  '1') {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            WinnerScreenNew(
+                                                              gId: lotteryModel
                                                                   ?.data
                                                                   ?.lotteries?[
                                                                       index]
-                                                                  .userCount,
-                                                        )));
-                                          } else {
-                                            Fluttertoast.showToast(
-                                                msg:
-                                                    "Please wait while the game starts, stay tuned and win excited amount"
-                                                        .tr);
-                                          }
-                                          // Navigator.push(context, MaterialPageRoute(builder: (context) =>  WinnerScreen(gId: lotteryModel?.data?.lotteries?[index].gameId,hours: differenceList[index].hour /*int.parse(hours ?? "")*/,minutes: differenceList[index].minutes/*int.parse(minutes ?? "")*/,sport: lotteryModel?.data?.lotteries?[index].ticketCount,sportLeft: lotteryModel?.data?.lotteries?[index].userCount)));
-                                        }
-                                      },
-                                      child: Container(
-                                          margin:
-                                              const EdgeInsets.only(bottom: 10),
-                                          clipBehavior: Clip.hardEdge,
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(16),
-                                              color: AppColors.whit,
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Color(0xFF000000)
-                                                      .withOpacity(.12),
-                                                  offset: Offset(0, 3),
-                                                  blurRadius: 8,
-                                                ),
-                                              ]),
-                                          child: Column(
-                                            children: [
-                                              const SizedBox(
-                                                height: 5,
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 10,
-                                                    right: 10,
-                                                    top: 5),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    SizedBox(
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width *
-                                                              .35,
-                                                      child: Text(
-                                                        "${lotteryModel!.data!.lotteries![index].gameName}",
-                                                        maxLines: 2,
-                                                        textAlign:
-                                                            TextAlign.start,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .bodyLarge!
-                                                            .copyWith(
+                                                                  .gameId,
+                                                              sport: lotteryModel
+                                                                  ?.data
+                                                                  ?.lotteries?[
+                                                                      index]
+                                                                  .ticketCount,
+                                                              sportLeft:
+                                                                  lotteryModel
+                                                                      ?.data
+                                                                      ?.lotteries?[
+                                                                          index]
+                                                                      .userCount,
+                                                            )));
+                                              } else {
+                                                Fluttertoast.showToast(
+                                                    msg:
+                                                        "Please wait while the game starts, stay tuned and win exciting amount"
+                                                            .tr);
+                                              }
+                                              // Navigator.push(context, MaterialPageRoute(builder: (context) =>  WinnerScreen(gId: lotteryModel?.data?.lotteries?[index].gameId,hours: differenceList[index].hour /*int.parse(hours ?? "")*/,minutes: differenceList[index].minutes/*int.parse(minutes ?? "")*/,sport: lotteryModel?.data?.lotteries?[index].ticketCount,sportLeft: lotteryModel?.data?.lotteries?[index].userCount)));
+                                            }
+                                          },
+                                          child: Container(
+                                              margin:
+                                                  const EdgeInsets.only(bottom: 10),
+                                              clipBehavior: Clip.hardEdge,
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(16),
+                                                  color: AppColors.whit,
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Color(0xFF000000)
+                                                          .withOpacity(.12),
+                                                      offset: Offset(0, 3),
+                                                      blurRadius: 8,
+                                                    ),
+                                                  ]),
+                                              child: Column(
+                                                children: [
+                                                  const SizedBox(
+                                                    height: 5,
+                                                  ),
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(
+                                                        left: 10,
+                                                        right: 10,
+                                                        top: 5),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        SizedBox(
+                                                          width:
+                                                              MediaQuery.of(context)
+                                                                      .size
+                                                                      .width *
+                                                                  .35,
+                                                          child: Text(
+                                                            "${lotteryModel!.data!.lotteries![index].gameName}",
+                                                            maxLines: 2,
+                                                            textAlign:
+                                                                TextAlign.start,
+                                                            overflow: TextOverflow
+                                                                .ellipsis,
+                                                            style: Theme.of(context)
+                                                                .textTheme
+                                                                .bodyLarge!
+                                                                .copyWith(
+                                                                    color: AppColors
+                                                                        .primary,
+                                                                    fontSize: 14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w700),
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          padding: const EdgeInsets
+                                                                  .symmetric(
+                                                              horizontal: 5,
+                                                              vertical: 5),
+                                                          decoration: BoxDecoration(
+                                                              color: AppColors.greyColor,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(7)),
+                                                          child: Row(
+                                                            children: [
+                                                              Text(
+                                                                "Result".tr,
+                                                                style: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .bodyMedium!
+                                                                    .copyWith(
+                                                                        fontSize:
+                                                                            12,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .w600),
+                                                              ),
+                                                              Text(
+                                                                formatDate(
+                                                                    lotteryModel!
+                                                                        .data!
+                                                                        .lotteries![
+                                                                            index]
+                                                                        .resultDate
+                                                                        .toString()),
+                                                                style: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .bodyMedium!
+                                                                    .copyWith(
+                                                                        fontSize:
+                                                                            12,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .w600),
+                                                              ),
+                                                              Text(
+                                                                " ${lotteryModel!.data!.lotteries![index].resultTime}",
+                                                                style: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .bodyMedium!
+                                                                    .copyWith(
+                                                                        fontSize:
+                                                                            12,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .w600),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Divider(
+                                                    color: Color(0xFFCFCFCF),
+                                                  ),
+                                                  _currentIndex == 3
+                                                      ? Container(
+                                                          padding: const EdgeInsets
+                                                                  .symmetric(
+                                                              horizontal: 5,
+                                                              vertical: 5),
+                                                          decoration: BoxDecoration(
+                                                              color: AppColors.buttonColor,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(7)),
+                                                          child: Text(
+                                                            "Completed".tr,
+                                                            style: TextStyle(
                                                                 color: AppColors
-                                                                    .primary,
-                                                                fontSize: 14,
+                                                                    .whit,
+                                                                fontSize: 12,
                                                                 fontWeight:
                                                                     FontWeight
-                                                                        .w700),
-                                                      ),
-                                                    ),
-                                                    Container(
-                                                      padding: const EdgeInsets
-                                                              .symmetric(
-                                                          horizontal: 5,
-                                                          vertical: 5),
-                                                      decoration: BoxDecoration(
-                                                          color: AppColors.greyColor,
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(7)),
-                                                      child: Row(
-                                                        children: [
-                                                          Text(
-                                                            "Result".tr,
-                                                            style: Theme.of(
-                                                                    context)
-                                                                .textTheme
-                                                                .bodyMedium!
-                                                                .copyWith(
-                                                                    fontSize:
-                                                                        12,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600),
+                                                                        .bold),
                                                           ),
-                                                          Text(
-                                                            formatDate(
-                                                                lotteryModel!
-                                                                    .data!
-                                                                    .lotteries![
-                                                                        index]
-                                                                    .resultDate
-                                                                    .toString()),
-                                                            style: Theme.of(
-                                                                    context)
-                                                                .textTheme
-                                                                .bodyMedium!
-                                                                .copyWith(
-                                                                    fontSize:
-                                                                        12,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600),
-                                                          ),
-                                                          Text(
-                                                            " ${lotteryModel!.data!.lotteries![index].resultTime}",
-                                                            style: Theme.of(
-                                                                    context)
-                                                                .textTheme
-                                                                .bodyMedium!
-                                                                .copyWith(
-                                                                    fontSize:
-                                                                        12,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                              Divider(
-                                                color: Color(0xFFCFCFCF),
-                                              ),
-                                              _currentIndex == 3
-                                                  ? Container(
-                                                      padding: const EdgeInsets
-                                                              .symmetric(
-                                                          horizontal: 5,
-                                                          vertical: 5),
-                                                      decoration: BoxDecoration(
-                                                          color: AppColors.buttonColor,
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(7)),
-                                                      child: Text(
-                                                        "Completed".tr,
-                                                        style: TextStyle(
-                                                            color: AppColors
-                                                                .whit,
-                                                            fontSize: 12,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                    )
-                                                  : differenceList.isEmpty ||
-                                                          differenceList[index]
-                                                                  .seconds ==
-                                                              ''
-                                                      ? SizedBox.shrink():SizedBox.shrink(),
-                                                      // : Center(
-                                                      //     child: Text(
-                                                      //       "${differenceList[index].hour} ${differenceList[index].minutes} ${differenceList[index].seconds}",
-                                                      //       style: TextStyle(
-                                                      //           color: Color(
-                                                      //               0XffD93B35),
-                                                      //           fontSize: 12,
-                                                      //           fontWeight:
-                                                      //               FontWeight
-                                                      //                   .bold),
-                                                      //     ),
-                                                      //   ),
+                                                        )
+                                                      : differenceList.isEmpty ||
+                                                              differenceList[index]
+                                                                      .seconds ==
+                                                                  ''
+                                                          ? SizedBox.shrink():SizedBox.shrink(),
+                                                          // : Center(
+                                                          //     child: Text(
+                                                          //       "${differenceList[index].hour} ${differenceList[index].minutes} ${differenceList[index].seconds}",
+                                                          //       style: TextStyle(
+                                                          //           color: Color(
+                                                          //               0XffD93B35),
+                                                          //           fontSize: 12,
+                                                          //           fontWeight:
+                                                          //               FontWeight
+                                                          //                   .bold),
+                                                          //     ),
+                                                          //   ),
 
-                                              // const SizedBox(
-                                              //   height: 5,
-                                              // ),
-                                              if (_currentIndex == 3)
-                                                const SizedBox.shrink()
-                                              else
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 5, right: 5),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .symmetric(
-                                                                horizontal: 5),
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: [
-                                                            Text(
-                                                              "  ${lotteryModel!.data!.lotteries![index].ticketCount}\n" +
-                                                                  "Coupon".tr,
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                              style: Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .bodyMedium!
-                                                                  .copyWith(
-                                                                      height: 1,
-                                                                      color: Color(
-                                                                          0Xff171717),
-                                                                      fontSize:
-                                                                          14,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold),
-                                                            ),
-                                                            const SizedBox(
-                                                              height: 15,
-                                                            ),
-                                                            Container(
-                                                              padding: const EdgeInsets
-                                                                      .symmetric(
-                                                                  horizontal: 5,
-                                                                  vertical: 5),
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            7),
-                                                                gradient:
-                                                                    const LinearGradient(
-                                                                  colors: [
-                                                                    AppColors.primary,
-                                                                    AppColors.secondary,
-                                                                  ],
-                                                                  // Define the colors
-                                                                  begin: Alignment
-                                                                      .topLeft,
-                                                                  end: Alignment
-                                                                      .topRight,
-                                                                ),
-                                                              ),
-                                                              child: Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .center,
-                                                                children: [
-                                                                  Text(
-                                                                    "Entry Fees"
-                                                                        .tr,
-                                                                    style: TextStyle(
-                                                                        color: AppColors
-                                                                            .whit,
-                                                                        fontSize:
-                                                                            10,
-                                                                        fontWeight:
-                                                                            FontWeight.w600),
-                                                                  ),
-                                                                  const SizedBox(
-                                                                    width: 2,
-                                                                  ),
-                                                                  Text(
-                                                                    "₹ ${lotteryModel!.data!.lotteries![index].ticketPrice}",
-                                                                    style: const TextStyle(
-                                                                        color: AppColors
-                                                                            .whit,
-                                                                        fontSize:
-                                                                            10,
-                                                                        fontWeight:
-                                                                            FontWeight.w600),
-                                                                  )
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            Text(
-                                                              "${int.parse("${lotteryModel!.data!.lotteries![index].ticketCount} ") - int.parse("${lotteryModel!.data!.lotteries![index].userCount}")}\n" +
-                                                                  "Coupon Left"
-                                                                      .tr,
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                              style: Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .bodyMedium!
-                                                                  .copyWith(
-                                                                      height: 1,
-                                                                      color: Color(
-                                                                          0XffD93B35),
-                                                                      fontSize:
-                                                                          14,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 10,
-                                                      ),
-                                                      Row(
+                                                  // const SizedBox(
+                                                  //   height: 5,
+                                                  // ),
+                                                  if (_currentIndex == 3)
+                                                    const SizedBox.shrink()
+                                                  else
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 5, right: 5),
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
                                                         mainAxisAlignment:
                                                             MainAxisAlignment
                                                                 .spaceBetween,
                                                         children: [
-                                                          // 0XffD93B35
-                                                          // const SizedBox(
-                                                          //   height:
-                                                          //       15,
-                                                          // ),
-                                                          Container(
+                                                          Padding(
                                                             padding:
                                                                 const EdgeInsets
                                                                         .symmetric(
-                                                                    horizontal:
-                                                                        5,
-                                                                    vertical:
-                                                                        5),
-                                                            decoration: BoxDecoration(
-                                                                color: const Color(
-                                                                    0xFF01BC09),
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            7)),
+                                                                    horizontal: 5),
                                                             child: Row(
                                                               mainAxisAlignment:
                                                                   MainAxisAlignment
-                                                                      .center,
+                                                                      .spaceBetween,
                                                               children: [
                                                                 Text(
-                                                                  "Start".tr,
+                                                                  "  ${lotteryModel!.data!.lotteries![index].ticketCount}\n" +
+                                                                      "Coupon".tr,
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .center,
                                                                   style: Theme.of(
                                                                           context)
                                                                       .textTheme
                                                                       .bodyMedium!
                                                                       .copyWith(
+                                                                          height: 1,
+                                                                          color: Color(
+                                                                              0Xff171717),
                                                                           fontSize:
-                                                                              10,
-                                                                          color: AppColors
-                                                                              .fntClr,
+                                                                              14,
                                                                           fontWeight:
-                                                                              FontWeight.bold),
+                                                                              FontWeight
+                                                                                  .bold),
                                                                 ),
-                                                                SizedBox(
-                                                                  width: 2,
+                                                                const SizedBox(
+                                                                  height: 15,
+                                                                ),
+                                                                Container(
+                                                                  padding: const EdgeInsets
+                                                                          .symmetric(
+                                                                      horizontal: 5,
+                                                                      vertical: 5),
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    borderRadius:
+                                                                        BorderRadius
+                                                                            .circular(
+                                                                                7),
+                                                                    gradient:
+                                                                        const LinearGradient(
+                                                                      colors: [
+                                                                        AppColors.primary,
+                                                                        AppColors.secondary,
+                                                                      ],
+                                                                      // Define the colors
+                                                                      begin: Alignment
+                                                                          .topLeft,
+                                                                      end: Alignment
+                                                                          .topRight,
+                                                                    ),
+                                                                  ),
+                                                                  child: Row(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .center,
+                                                                    children: [
+                                                                      Text(
+                                                                        "Entry Fees"
+                                                                            .tr,
+                                                                        style: TextStyle(
+                                                                            color: AppColors
+                                                                                .whit,
+                                                                            fontSize:
+                                                                                10,
+                                                                            fontWeight:
+                                                                                FontWeight.w600),
+                                                                      ),
+                                                                      const SizedBox(
+                                                                        width: 2,
+                                                                      ),
+                                                                      Text(
+                                                                        "₹ ${lotteryModel!.data!.lotteries![index].ticketPrice}",
+                                                                        style: const TextStyle(
+                                                                            color: AppColors
+                                                                                .whit,
+                                                                            fontSize:
+                                                                                10,
+                                                                            fontWeight:
+                                                                                FontWeight.w600),
+                                                                      )
+                                                                    ],
+                                                                  ),
                                                                 ),
                                                                 Text(
-                                                                  '${DateFormat('dd/MM/yyyy').format(DateTime.parse('${lotteryModel!.data!.lotteries![index].date} 00:00:00'))}',
+                                                                  "${int.parse("${lotteryModel!.data!.lotteries![index].ticketCount} ") - int.parse("${lotteryModel!.data!.lotteries![index].userCount}")}\n" +
+                                                                      "Coupon Left"
+                                                                          .tr,
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .center,
                                                                   style: Theme.of(
                                                                           context)
                                                                       .textTheme
                                                                       .bodyMedium!
                                                                       .copyWith(
+                                                                          height: 1,
+                                                                          color: Color(
+                                                                              0XffD93B35),
                                                                           fontSize:
-                                                                              10,
-                                                                          color: AppColors
-                                                                              .fntClr,
+                                                                              14,
                                                                           fontWeight:
-                                                                              FontWeight.bold),
-                                                                )
+                                                                              FontWeight
+                                                                                  .bold),
+                                                                ),
                                                               ],
                                                             ),
                                                           ),
-                                                          Container(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .symmetric(
-                                                                    horizontal:
-                                                                        5,
-                                                                    vertical:
-                                                                        5),
-                                                            decoration: BoxDecoration(
-                                                                color: const Color(
-                                                                    0xFF01BC09),
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            7)),
-                                                            child: Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .center,
-                                                              children: [
-                                                                Text(
-                                                                  "End".tr,
-                                                                  style: Theme.of(
-                                                                          context)
-                                                                      .textTheme
-                                                                      .bodyMedium!
-                                                                      .copyWith(
-                                                                          fontSize:
-                                                                              10,
-                                                                          color: AppColors
-                                                                              .fntClr,
-                                                                          fontWeight:
-                                                                              FontWeight.bold),
+                                                          SizedBox(
+                                                            height: 10,
+                                                          ),
+                                                          Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            children: [
+                                                              // 0XffD93B35
+                                                              // const SizedBox(
+                                                              //   height:
+                                                              //       15,
+                                                              // ),
+                                                              Container(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .symmetric(
+                                                                        horizontal:
+                                                                            5,
+                                                                        vertical:
+                                                                            5),
+                                                                decoration: BoxDecoration(
+                                                                    color: const Color(
+                                                                        0xFF01BC09),
+                                                                    borderRadius:
+                                                                        BorderRadius
+                                                                            .circular(
+                                                                                7)),
+                                                                child: Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .center,
+                                                                  children: [
+                                                                    Text(
+                                                                      "Start".tr,
+                                                                      style: Theme.of(
+                                                                              context)
+                                                                          .textTheme
+                                                                          .bodyMedium!
+                                                                          .copyWith(
+                                                                              fontSize:
+                                                                                  10,
+                                                                              color: AppColors
+                                                                                  .fntClr,
+                                                                              fontWeight:
+                                                                                  FontWeight.bold),
+                                                                    ),
+                                                                    SizedBox(
+                                                                      width: 2,
+                                                                    ),
+                                                                    Text(
+                                                                      '${DateFormat('dd/MM/yyyy').format(DateTime.parse('${lotteryModel!.data!.lotteries![index].date} 00:00:00'))}',
+                                                                      style: Theme.of(
+                                                                              context)
+                                                                          .textTheme
+                                                                          .bodyMedium!
+                                                                          .copyWith(
+                                                                              fontSize:
+                                                                                  10,
+                                                                              color: AppColors
+                                                                                  .fntClr,
+                                                                              fontWeight:
+                                                                                  FontWeight.bold),
+                                                                    )
+                                                                  ],
                                                                 ),
-                                                                const SizedBox(
-                                                                  width: 2,
+                                                              ),
+                                                              Container(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .symmetric(
+                                                                        horizontal:
+                                                                            5,
+                                                                        vertical:
+                                                                            5),
+                                                                decoration: BoxDecoration(
+                                                                    color: const Color(
+                                                                        0xFF01BC09),
+                                                                    borderRadius:
+                                                                        BorderRadius
+                                                                            .circular(
+                                                                                7)),
+                                                                child: Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .center,
+                                                                  children: [
+                                                                    Text(
+                                                                      "End".tr,
+                                                                      style: Theme.of(
+                                                                              context)
+                                                                          .textTheme
+                                                                          .bodyMedium!
+                                                                          .copyWith(
+                                                                              fontSize:
+                                                                                  10,
+                                                                              color: AppColors
+                                                                                  .fntClr,
+                                                                              fontWeight:
+                                                                                  FontWeight.bold),
+                                                                    ),
+                                                                    const SizedBox(
+                                                                      width: 2,
+                                                                    ),
+                                                                    Text(
+                                                                      "${DateFormat('dd/MM/yyyy').format(DateTime.parse('${lotteryModel!.data!.lotteries![index].endDate} 00:00:00'))}",
+                                                                      style: Theme.of(
+                                                                              context)
+                                                                          .textTheme
+                                                                          .bodyMedium!
+                                                                          .copyWith(
+                                                                              fontSize:
+                                                                                  10,
+                                                                              color: AppColors
+                                                                                  .fntClr,
+                                                                              fontWeight:
+                                                                                  FontWeight.bold),
+                                                                    )
+                                                                  ],
                                                                 ),
-                                                                Text(
-                                                                  "${DateFormat('dd/MM/yyyy').format(DateTime.parse('${lotteryModel!.data!.lotteries![index].endDate} 00:00:00'))}",
-                                                                  style: Theme.of(
-                                                                          context)
-                                                                      .textTheme
-                                                                      .bodyMedium!
-                                                                      .copyWith(
-                                                                          fontSize:
-                                                                              10,
-                                                                          color: AppColors
-                                                                              .fntClr,
-                                                                          fontWeight:
-                                                                              FontWeight.bold),
-                                                                )
-                                                              ],
-                                                            ),
+                                                              ),
+                                                            ],
                                                           ),
                                                         ],
                                                       ),
-                                                    ],
+                                                    ),
+                                                  const SizedBox(
+                                                    height: 10,
                                                   ),
-                                                ),
-                                              const SizedBox(
-                                                height: 10,
-                                              ),
-                                              Container(
-                                                clipBehavior: Clip.hardEdge,
-                                                decoration: BoxDecoration(
-                                                    gradient: LinearGradient(
-                                                        colors: [
-                                                      AppColors.greyColor.withOpacity(.1),
-                                                      AppColors.greyColor.withOpacity(.5),
+                                                  Container(
+                                                    clipBehavior: Clip.hardEdge,
+                                                    decoration: BoxDecoration(
+                                                        gradient: LinearGradient(
+                                                            colors: [
+                                                          AppColors.greyColor.withOpacity(.1),
+                                                          AppColors.greyColor.withOpacity(.5),
 
-                                                    ])),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Row(
+                                                        ])),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
                                                       children: [
-                                                        Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    left: 10),
-                                                            child:
-                                                                SizedBox.square(
-                                                              dimension: 25,
-                                                              child:
-                                                                  Image.network(
-                                                                lotteryModel!
-                                                                    .data!
-                                                                    .lotteries![
-                                                                        index]
-                                                                    .image
-                                                                    .toString(),
-                                                              ),
-                                                            )),
-                                                        Container(
-                                                          //width: 100,
-                                                          margin:
-                                                              const EdgeInsets
-                                                                  .all(5),
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .symmetric(
-                                                                  vertical: 5),
-                                                          // decoration: BoxDecoration(
-                                                          //     color: const Color(0Xff00E701),
-                                                          //     borderRadius: BorderRadius.circular(10)
-                                                          // ),
-                                                          child: (lotteryModel!
+                                                        Row(
+                                                          children: [
+                                                            Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .only(
+                                                                        left: 10),
+                                                                child:
+                                                                    SizedBox.square(
+                                                                  dimension: 25,
+                                                                  child:
+                                                                      Image.network(
+                                                                    lotteryModel!
+                                                                        .data!
+                                                                        .lotteries![
+                                                                            index]
+                                                                        .image
+                                                                        .toString(),
+                                                                  ),
+                                                                )),
+                                                            Container(
+                                                              //width: 100,
+                                                              margin:
+                                                                  const EdgeInsets
+                                                                      .all(5),
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .symmetric(
+                                                                      vertical: 5),
+                                                              // decoration: BoxDecoration(
+                                                              //     color: const Color(0Xff00E701),
+                                                              //     borderRadius: BorderRadius.circular(10)
+                                                              // ),
+                                                              child: (lotteryModel!
+                                                                              .data!
+                                                                              .lotteries![
+                                                                                  index]
+                                                                              .prizeName ==
+                                                                          null ||
+                                                                      lotteryModel!
                                                                           .data!
                                                                           .lotteries![
                                                                               index]
-                                                                          .prizeName ==
-                                                                      null ||
-                                                                  lotteryModel!
-                                                                      .data!
-                                                                      .lotteries![
-                                                                          index]
-                                                                      .winningPositionHistory!
-                                                                      .isEmpty)
-                                                              ? const Text(
-                                                                  "",
-                                                                  style: TextStyle(
-                                                                      color: AppColors
-                                                                          .whit,
-                                                                      fontSize:
-                                                                          12,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold),
-                                                                )
-                                                              : Text(
-                                                                  " ${lotteryModel?.data?.lotteries?[index].prizeName} : ₹${lotteryModel!.data!.lotteries?[index].winningPositionHistory?.first.winnerPrice}",
-                                                                  style: const TextStyle(
-                                                                      color: Colors
-                                                                          .black,
-                                                                      fontSize:
-                                                                          12,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold),
-                                                                ),
+                                                                          .winningPositionHistory!
+                                                                          .isEmpty)
+                                                                  ? const Text(
+                                                                      "",
+                                                                      style: TextStyle(
+                                                                          color: AppColors
+                                                                              .whit,
+                                                                          fontSize:
+                                                                              12,
+                                                                          fontWeight:
+                                                                              FontWeight
+                                                                                  .bold),
+                                                                    )
+                                                                  : Text(
+                                                                      "₹${lotteryModel!.data!.lotteries?[index].winningPositionHistory?.first.winnerPrice}",
+                                                                      style: const TextStyle(
+                                                                          color: Colors
+                                                                              .black,
+                                                                          fontSize:
+                                                                              12,
+                                                                          fontWeight:
+                                                                              FontWeight
+                                                                                  .bold),
+                                                                    ),
+                                                            ),
+                                                            //   Text(
+                                                            //     "₹ ${lotteryModel!.data!.lotteries![index].winningPositionHistory!.first.winnerPrice}",
+                                                            //   style: const TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.bold,fontFamily: 'lora'),
+                                                            // ),
+                                                          ],
                                                         ),
-                                                        //   Text(
-                                                        //     "₹ ${lotteryModel!.data!.lotteries![index].winningPositionHistory!.first.winnerPrice}",
-                                                        //   style: const TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.bold,fontFamily: 'lora'),
-                                                        // ),
+                                                        Row(
+                                                          children: [
+                                                            Image.asset(
+                                                              "assets/icons/teamIcon.png",
+                                                              scale: 1.3,
+                                                            ),
+                                                            const SizedBox(
+                                                              width: 8,
+                                                            ),
+                                                            Text(
+                                                              "Max Coupon".tr,
+                                                              style: TextStyle(
+                                                                  color:
+                                                                      Colors.black,
+                                                                  fontSize: 12,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                            ),
+                                                            Text(
+                                                              "${lotteryModel!.data!.lotteries![index].ticketMaxCount}",
+                                                              style: TextStyle(
+                                                                  color:
+                                                                      Colors.black,
+                                                                  fontSize: 12,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                            ),
+                                                            const SizedBox(
+                                                              width: 10,
+                                                            ),
+                                                          ],
+                                                        )
                                                       ],
                                                     ),
-                                                    Row(
-                                                      children: [
-                                                        Image.asset(
-                                                          "assets/icons/teamIcon.png",
-                                                          scale: 1.3,
-                                                        ),
-                                                        const SizedBox(
-                                                          width: 8,
-                                                        ),
-                                                        Text(
-                                                          "Max Coupon".tr,
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.black,
-                                                              fontSize: 12,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold),
-                                                        ),
-                                                        Text(
-                                                          "${lotteryModel!.data!.lotteries![index].ticketMaxCount}",
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.black,
-                                                              fontSize: 12,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold),
-                                                        ),
-                                                        const SizedBox(
-                                                          width: 10,
-                                                        ),
-                                                      ],
-                                                    )
-                                                  ],
-                                                ),
-                                              )
-                                            ],
-                                          )),
-                                    );
-                                  }),
-                    ),
-                  )
-                ],
-              ),
-            );
-          } else {
-            return const Center(
-                child: CircularProgressIndicator(color: AppColors.primary));
-          }
-        },
+                                                  )
+                                                ],
+                                              )),
+                                        );
+                                      }),
+                        ),
+                      )
+                    ],
+                  ),
+                );
+              } else {
+                return const Center(
+                    child: CircularProgressIndicator(color: AppColors.primary));
+              }
+            },
+          );
+        }
       ),
     );
   }

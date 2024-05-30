@@ -41,7 +41,7 @@ const enUS = '''{
     "My Account": "My Account",
     "OPPS MSG": "Oops! Something went wrong on our end. Our team is already on it, trying to fix the issue. Please try again later. We apologize for any inconvenience this may have caused.",
     "Entry Fees": "Entry Fees: ",
-    "Result": "Result: ",
+    "Result": "Result",
     "Coupon": "Coupon",
     "Home":"Home",
     "Choose from Gallery":"Choose from Gallery",

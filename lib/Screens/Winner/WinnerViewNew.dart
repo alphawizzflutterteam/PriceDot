@@ -109,6 +109,8 @@ class _WinnerScreenNewState extends State<WinnerScreenNew>
     });
   }
 
+
+
   String randomNum = '';
   List<String> numbersList = [];
   List<String> removeList = [];
@@ -339,11 +341,11 @@ class _WinnerScreenNewState extends State<WinnerScreenNew>
                         ),
                       ),
                       Container(
-                        height: height * .27,
+                        height: height * .17,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 16),
                         decoration:  BoxDecoration(
-                          color: AppColors.secondary1.withOpacity(0.5),
+                          color: AppColors.secondary1.withOpacity(0.3),
                         ),
                         child: Column(
                           children: [
@@ -415,7 +417,7 @@ class _WinnerScreenNewState extends State<WinnerScreenNew>
                         width: width,
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         decoration:  BoxDecoration(
-                          color: AppColors.secondary1.withOpacity(0.5),
+                          color: AppColors.secondary1.withOpacity(0.3),
                         ),
                         child: Column(
                           children: [
@@ -541,8 +543,7 @@ class _WinnerScreenNewState extends State<WinnerScreenNew>
                                                   GestureDetector(
                                                     onTap: () {
                                                       Navigator.pop(context);
-
-                                                      payWallet(context);
+                                                      payWallet(ctx:context,amt: finalTotal!=''?finalTotal: lotteryDetailsModel!.data!.lottery!.ticketPrice.toString(),promoName: code,disc: disAmt);
                                                     },
                                                     child: Container(
                                                       width: double.infinity,
@@ -776,28 +777,28 @@ class _WinnerScreenNewState extends State<WinnerScreenNew>
                         // color: Colors.greenAccent.withOpacity(0.4),
                         child: ConstrainedBox(
                           constraints: BoxConstraints(
-                              maxHeight: height * .25, maxWidth: width),
+                              maxHeight: height * .12, maxWidth: width*.7),
                           child: Image.asset(
-                            "assets/images/1.png",
+                            "assets/images/slot.png",
                           ),
                         ),
                       )),
+                  // Positioned(
+                  //     top: height * .183,
+                  //     left: width * .01,
+                  //     right: width * .01,
+                  //     child: Text(
+                  //       '₹${lotteryDetailsModel!.data!.lottery!.winningPositionHistory.first.winnerPrice.toString()}',
+                  //       textAlign: TextAlign.center,
+                  //       style: const TextStyle(
+                  //           fontSize: 18,
+                  //           fontWeight: FontWeight.bold,
+                  //           color: Color(0xFFECCB78)),
+                  //     )),
                   Positioned(
-                      top: height * .283,
+                      top: height * .215,
                       left: width * .01,
-                      right: width * .01,
-                      child: Text(
-                        '₹${lotteryDetailsModel!.data!.lottery!.winningPositionHistory.first.winnerPrice.toString()}',
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFFECCB78)),
-                      )),
-                  Positioned(
-                      top: height * .34,
-                      left: width * .04,
-                      right: width * .01,
+                      right: width * .018,
                       child: AnimatedBuilder(
                         animation: controller,
                         builder: (context, child) => DigitBasedLetterSpacing(
@@ -930,7 +931,7 @@ class _WinnerScreenNewState extends State<WinnerScreenNew>
     }
   }
 
-  payWallet(BuildContext ctx) async {
+  payWallet({required BuildContext ctx,required String amt,required String promoName,required String disc}) async {
     setState(() {
       isLoading = true;
     });
@@ -940,11 +941,12 @@ class _WinnerScreenNewState extends State<WinnerScreenNew>
     request.body = json.encode({
       "user_id": user_id,
       "game_id": widget.gId,
-      "amount": amount,
+      "amount": amt,
       "lottery_numbers": randomNum ?? "0",
       "order_number": "2675db01c965",
       "txn_id": DateTime.now().millisecondsSinceEpoch.toString(),
-    });
+      "promo_amount":disc,
+      "promo_name":promoName,});
     print('${request.body}___________b');
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
@@ -969,12 +971,13 @@ class _WinnerScreenNewState extends State<WinnerScreenNew>
               Future.delayed(const Duration(seconds: 3)).then((value) {
                 dispose();
                 Navigator.pop(c);
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => DashBoardScreen(),
-                    ),
-                    (route) => false);
+                Navigator.pop(context);
+                // Navigator.pushAndRemoveUntil(
+                //     context,
+                //     MaterialPageRoute(
+                //       builder: (context) => DashBoardScreen(),
+                //     ),
+                //     (route) => false);
               });
               return PopScope(
                 canPop: false,
@@ -1237,6 +1240,7 @@ class _WinnerScreenNewState extends State<WinnerScreenNew>
   }
 }
 
+
 class DigitBasedLetterSpacing extends StatelessWidget {
   String text;
 
@@ -1250,8 +1254,8 @@ class DigitBasedLetterSpacing extends StatelessWidget {
       text,
       textAlign: TextAlign.center,
       style: TextStyle(
-        fontSize: 34.0,
-        color: Color(0xFFECCB78),
+        fontSize: 42.0,
+      color: Colors.black,
         fontWeight: FontWeight.w800,
         letterSpacing: letterSpacing,
       ),
@@ -1265,7 +1269,7 @@ class DigitBasedLetterSpacing extends StatelessWidget {
     // } else if (text.length == 3) {
     //   return 14;
     // } else {
-    return 14;
+    return 20;
     // }
   }
 }
