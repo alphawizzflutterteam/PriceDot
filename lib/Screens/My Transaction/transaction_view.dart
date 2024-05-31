@@ -46,10 +46,12 @@ class _TransactionScreenState extends State<TransactionScreen> {
       });
     }
     if (value == '5') {
-      DateTime lastWeekDate = DateTime.now();
+      DateTime lastWeekDate =DateTime.now();
       data.forEach((element) {
-        print("objectId : ${element.insertDate}");
-        if (DateTime.parse(element.insertDate.toString())
+
+        DateTime dateOnly = DateTime.parse(element.insertDate.toString());
+        print("objectId : ${dateOnly.subtract(Duration(hours: dateOnly.hour,minutes: dateOnly.minute,seconds: dateOnly.second))} ${lastWeekDate}");
+        if (dateOnly.subtract(Duration(hours: dateOnly.hour,minutes: dateOnly.minute,seconds: dateOnly.second))
             .isAtSameMomentAs(lastWeekDate)) {
           filterList.add(element);
         }
@@ -203,35 +205,35 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                                         : Colors.white,
                                                   )),
                                             ),
-                                            GestureDetector(
-                                              onTap: () {
-                                                selectedFilter = 5;
-                                                filterData(value: "5");
-                                              },
-                                              child: Container(
-                                                  margin: const EdgeInsets.only(
-                                                      right: 5),
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                      horizontal: 16,
-                                                      vertical: 8),
-                                                  child: Text(
-                                                    "Today",
-                                                    style: TextStyle(
-                                                        color:
-                                                            selectedFilter == 5
-                                                                ? Colors.white
-                                                                : Colors.black),
-                                                  ),
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20),
-                                                    color: selectedFilter == 5
-                                                        ? AppColors.primary
-                                                        : Colors.white,
-                                                  )),
-                                            ),
+                                            // GestureDetector(
+                                            //   onTap: () {
+                                            //     selectedFilter = 5;
+                                            //     filterData(value: "5");
+                                            //   },
+                                            //   child: Container(
+                                            //       margin: const EdgeInsets.only(
+                                            //           right: 5),
+                                            //       padding: const EdgeInsets
+                                            //           .symmetric(
+                                            //           horizontal: 16,
+                                            //           vertical: 8),
+                                            //       child: Text(
+                                            //         "Today",
+                                            //         style: TextStyle(
+                                            //             color:
+                                            //                 selectedFilter == 5
+                                            //                     ? Colors.white
+                                            //                     : Colors.black),
+                                            //       ),
+                                            //       decoration: BoxDecoration(
+                                            //         borderRadius:
+                                            //             BorderRadius.circular(
+                                            //                 20),
+                                            //         color: selectedFilter == 5
+                                            //             ? AppColors.primary
+                                            //             : Colors.white,
+                                            //       )),
+                                            // ),
                                             GestureDetector(
                                               onTap: () {
                                                 selectedFilter = 2;
@@ -510,7 +512,12 @@ class _TransactionScreenState extends State<TransactionScreen> {
         TransactionModel = MyTransactionModel.fromJson(json);
         data = TransactionModel!.data;
         filterList.clear();
-        filterList.addAll(data);
+        data.forEach((element) {
+          if(element.amount!='0'){
+            filterList.add(element);
+          }
+        });
+
         setState(() {});
       } else {
         print(response.reasonPhrase);

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:pricedot/Constants.dart';
 import 'package:pricedot/Widgets/auth_custom_design.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -118,31 +119,12 @@ class _LotteryDetailsState extends State<LotteryDetails> {
               Icons.arrow_back_ios_new_rounded,
               color: Colors.white,
             )),
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Image.asset(
-              "assets/images/CupIcon.png",
-              scale: 2,
-            ),
-            const SizedBox(
-              width: 7,
-            ),
-            Text(
-              "Result".tr,
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(
-              width: 7,
-            ),
-            Image.asset(
-              "assets/images/CupIcon.png",
-              scale: 2,
-            ),
-          ],
+        title: Text(
+          "Result".tr,
+          style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         backgroundColor: AppColors.primary,
@@ -305,7 +287,7 @@ class _LotteryDetailsState extends State<LotteryDetails> {
                                                   color: AppColors.red,
                                                   fontWeight: FontWeight.bold))
                                           : Text(
-                                              '₹ ${results[index].price}',
+                                             (numericRegex.hasMatch("${results[index].price}")?"₹":"") +'${results[index].price}',
                                               style: const TextStyle(
                                                   color: AppColors.fntClr,
                                                   fontWeight: FontWeight.bold),

@@ -6,6 +6,7 @@ import 'dart:developer' as d;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
+import 'package:pricedot/Constants.dart';
 import 'package:pricedot/Models/HomeModel/get_profile_model.dart';
 import 'package:pricedot/Routes/routes.dart';
 import 'package:pricedot/Screens/Dashboard/dashboard_view.dart';
@@ -197,31 +198,12 @@ class _WinnerScreenNewState extends State<WinnerScreenNew>
         automaticallyImplyLeading: false,
         //toolbarHeight: 60,
         centerTitle: true,
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Image.asset(
-              "assets/images/CupIcon.png",
-              scale: 2,
-            ),
-            const SizedBox(
-              width: 7,
-            ),
-            Text(
-              "Play Contest".tr,
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(
-              width: 7,
-            ),
-            Image.asset(
-              "assets/images/CupIcon.png",
-              scale: 2,
-            ),
-          ],
+        title: Text(
+          "Play Contest".tr,
+          style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold),
         ),
         // const Text(
         //   "Winner",
@@ -230,7 +212,7 @@ class _WinnerScreenNewState extends State<WinnerScreenNew>
         // ),
         leading: IconButton(
             onPressed: () {
-              Get.offAllNamed(bottomBar);
+              Get.back();
             },
             icon: const Icon(
               Icons.chevron_left,
@@ -741,21 +723,22 @@ class _WinnerScreenNewState extends State<WinnerScreenNew>
                                                           ),
                                                       ],
                                                     ),
-                                                    Row(
-                                                      children: [
-                                                        // Text("Winning Price :"),
-                                                        // SizedBox(width: 3,),
-                                                        Text(
-                                                          '₹ ${lotteryDetailsModel!.data!.lottery!.winningPositionHistory![i].winnerPrice}',
-                                                          style: const TextStyle(
-                                                              color: AppColors
-                                                                  .fntClr,
-                                                              fontSize: 16,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold),
-                                                        )
-                                                      ],
+                                                    Container(
+                                                      width:MediaQuery.of(context).size.width*.5,
+
+                                                      child: Text(
+                                                        (numericRegex.hasMatch('${lotteryDetailsModel!.data!.lottery!.winningPositionHistory[i].winnerPrice}')?"₹":"")+  '${lotteryDetailsModel!.data!.lottery!.winningPositionHistory[i].winnerPrice}',
+                                                        style: const TextStyle(
+                                                            color: AppColors
+                                                                .fntClr,
+                                                            fontSize: 16,
+
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                        textAlign: TextAlign.right,
+                                                      ),
+                                                      alignment: Alignment.centerRight,
                                                     )
                                                   ],
                                                 ),

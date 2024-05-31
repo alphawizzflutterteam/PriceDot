@@ -440,62 +440,62 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       ),
                                     ),
 
-                              const SizedBox(
-                                height: 8,
-                              ),
-                              CURR_USR == '243'
-                                  ? const SizedBox.shrink()
-                                  : GestureDetector(
-                                      onTap: () {
-                                        Get.toNamed(resultScreen,
-                                            arguments: true);
-                                      },
-                                      child: Container(
-                                        
-                                        decoration: getDeco(),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 16, vertical: 10),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 6),
-                                                    child: Image.asset(
-                                                      "assets/images/My Lottery.png",
-                                                      height: 20,
-                                                      color:
-                                                          AppColors.iconColor,
-                                                    ),
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 10,
-                                                  ),
-                                                  Text(
-                                                    "My Contest".tr,
-                                                    style: TextStyle(
-                                                        color: AppColors.fntClr,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                ],
-                                              ),
-                                              const Icon(
-                                                Icons
-                                                    .arrow_forward_ios_outlined,
-                                                color: AppColors.greyColor,
-                                                size: 17,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
+                              // const SizedBox(
+                              //   height: 8,
+                              // ),
+                              // CURR_USR == '243'
+                              //     ? const SizedBox.shrink()
+                              //     : GestureDetector(
+                              //         onTap: () {
+                              //           Get.toNamed(resultScreen,
+                              //               arguments: true);
+                              //         },
+                              //         child: Container(
+                              //
+                              //           decoration: getDeco(),
+                              //           child: Padding(
+                              //             padding: const EdgeInsets.symmetric(
+                              //                 horizontal: 16, vertical: 10),
+                              //             child: Row(
+                              //               mainAxisAlignment:
+                              //                   MainAxisAlignment.spaceBetween,
+                              //               children: [
+                              //                 Row(
+                              //                   children: [
+                              //                     Padding(
+                              //                       padding:
+                              //                           const EdgeInsets.only(
+                              //                               left: 6),
+                              //                       child: Image.asset(
+                              //                         "assets/images/My Lottery.png",
+                              //                         height: 20,
+                              //                         color:
+                              //                             AppColors.iconColor,
+                              //                       ),
+                              //                     ),
+                              //                     const SizedBox(
+                              //                       width: 10,
+                              //                     ),
+                              //                     Text(
+                              //                       "My Contest".tr,
+                              //                       style: TextStyle(
+                              //                           color: AppColors.fntClr,
+                              //                           fontWeight:
+                              //                               FontWeight.bold),
+                              //                     ),
+                              //                   ],
+                              //                 ),
+                              //                 const Icon(
+                              //                   Icons
+                              //                       .arrow_forward_ios_outlined,
+                              //                   color: AppColors.greyColor,
+                              //                   size: 17,
+                              //                 ),
+                              //               ],
+                              //             ),
+                              //           ),
+                              //         ),
+                              //       ),
                               // const SizedBox(
                               //   height: 8,
                               // ),

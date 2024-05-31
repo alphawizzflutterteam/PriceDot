@@ -116,7 +116,7 @@ class AllPages {
           name: video, page: () => const Video(), binding: ScreenBindings()),
       GetPage(
           name: contact,
-          page: () => const ContactUsScreen(),
+          page: () =>  ContactUsScreen(),
           binding: ScreenBindings()),
       GetPage(
           name: notice,

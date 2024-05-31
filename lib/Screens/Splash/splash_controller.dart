@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'package:pricedot/Controllers/app_base_controller/app_base_controller.dart';
 import 'package:pricedot/Local_Storage/shared_pre.dart';
@@ -6,7 +7,8 @@ import 'package:pricedot/Routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-
+import 'package:http/http.dart' as http;
+import 'package:pricedot/Services/api_services/apiConstants.dart';
 import '../../Utils/PrefUtils.dart';
 
 String CURR_USR = '';
@@ -20,7 +22,28 @@ class SplashController extends AppBaseController {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
+    getSettings();
     checkLogin();
+  }
+
+  getSettings() async {
+    try {
+      var request = http.Request(
+          'GET',
+          Uri.parse(
+              '${baseUrl}Apicontroller/settings'));
+
+      http.StreamedResponse response = await request.send();
+      var json=jsonDecode(await response.stream.bytesToString());
+      if (response.statusCode == 200) {
+         await PreferenceUtils.setString(PrefKeys.settings, jsonEncode(json));
+
+      } else {
+        print(response.reasonPhrase);
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
   }
 
   checkInternet() async {
@@ -57,7 +80,7 @@ class SplashController extends AppBaseController {
           Get.updateLocale(Locale('en', 'US'));
           break;
       }
-      if (isLogin=='true') {
+      if (isLogin == 'true') {
         Get.offAllNamed(bottomBar);
       } else {
         Get.offAllNamed(selectLang);

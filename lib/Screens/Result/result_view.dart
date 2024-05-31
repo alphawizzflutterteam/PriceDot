@@ -75,31 +75,12 @@ class _ResultScreenState extends State<ResultScreen> {
             : null,
         toolbarHeight: 60,
         centerTitle: true,
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Image.asset(
-              "assets/images/CupIcon.png",
-              scale: 2,
-            ),
-            const SizedBox(
-              width: 7,
-            ),
-            Text(
-              CURR_USR == '243' ? "My Tasks" : "My Contest".tr,
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(
-              width: 7,
-            ),
-            Image.asset(
-              "assets/images/CupIcon.png",
-              scale: 2,
-            ),
-          ],
+        title: Text(
+          CURR_USR == '243' ? "My Tasks" : "My Contest".tr,
+          style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold),
         ),
       ),
       // appBar: AppBar,
@@ -123,6 +104,10 @@ class _ResultScreenState extends State<ResultScreen> {
                       print("Index====> $index");
                       return GestureDetector(
                         onTap: () {
+                        if( getResultModel!
+                            .data!.lotteries[index].status=='3')   {
+                          Fluttertoast.showToast(msg: "This game has been cancelled by the admin");
+                        }else{
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -139,6 +124,7 @@ class _ResultScreenState extends State<ResultScreen> {
                               ),
                             ),
                           );
+                        }
                         },
                         child: Container(
                             margin: const EdgeInsets.only(
@@ -470,18 +456,12 @@ class _ResultScreenState extends State<ResultScreen> {
 
   getLottery() async {
     getResultModel = null;
-    var headers = {
-      'Content-Type': 'application/json',
-      'Cookie': 'ci_session=4b8b6274f26a280877c08cfedab1d6e9b46e4d2d'
-    };
     var request =
         http.Request('POST', Uri.parse('$baseUrl1/Apicontroller/getLotteries'));
     request.body = json.encode({"user_id": userId});
     print('_____request.b dfgbdfghgf ody_____${request.body}_________');
-    request.headers.addAll(headers);
     print(request.url);
     http.StreamedResponse response = await request.send();
-
     if (response.statusCode == 200) {
       var result = await response.stream.bytesToString();
       var finalResult = MyLotteryModel.fromJson(jsonDecode(result));

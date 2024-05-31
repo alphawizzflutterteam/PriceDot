@@ -5,6 +5,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:pricedot/Constants.dart';
 import 'package:pricedot/Local_Storage/shared_pre.dart';
 import 'package:pricedot/Models/CategoryModel.dart';
 import 'package:pricedot/Models/HomeModel/get_profile_model.dart';
@@ -603,6 +604,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   Divider(
                                                     color: Color(0xFFCFCFCF),
                                                   ),
+
                                                   _currentIndex == 3
                                                       ? Container(
                                                           padding: const EdgeInsets
@@ -630,18 +632,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                       .seconds ==
                                                                   ''
                                                           ? SizedBox.shrink():SizedBox.shrink(),
-                                                          // : Center(
-                                                          //     child: Text(
-                                                          //       "${differenceList[index].hour} ${differenceList[index].minutes} ${differenceList[index].seconds}",
-                                                          //       style: TextStyle(
-                                                          //           color: Color(
-                                                          //               0XffD93B35),
-                                                          //           fontSize: 12,
-                                                          //           fontWeight:
-                                                          //               FontWeight
-                                                          //                   .bold),
-                                                          //     ),
-                                                          //   ),
+
 
                                                   // const SizedBox(
                                                   //   height: 5,
@@ -817,7 +808,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                               fontSize:
                                                                                   10,
                                                                               color: AppColors
-                                                                                  .fntClr,
+                                                                                  .whit,
                                                                               fontWeight:
                                                                                   FontWeight.bold),
                                                                     ),
@@ -825,7 +816,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                       width: 2,
                                                                     ),
                                                                     Text(
-                                                                      '${DateFormat('dd/MM/yyyy').format(DateTime.parse('${lotteryModel!.data!.lotteries![index].date} 00:00:00'))}',
+                                                                      '${DateFormat('dd/MM/yyyy hh:mm a').format(DateTime.parse('${lotteryModel!.data!.lotteries![index].openingTime}'))}',
                                                                       style: Theme.of(
                                                                               context)
                                                                           .textTheme
@@ -834,7 +825,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                               fontSize:
                                                                                   10,
                                                                               color: AppColors
-                                                                                  .fntClr,
+                                                                                  .whit,
                                                                               fontWeight:
                                                                                   FontWeight.bold),
                                                                     )
@@ -871,7 +862,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                               fontSize:
                                                                                   10,
                                                                               color: AppColors
-                                                                                  .fntClr,
+                                                                                  .whit,
                                                                               fontWeight:
                                                                                   FontWeight.bold),
                                                                     ),
@@ -879,7 +870,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                       width: 2,
                                                                     ),
                                                                     Text(
-                                                                      "${DateFormat('dd/MM/yyyy').format(DateTime.parse('${lotteryModel!.data!.lotteries![index].endDate} 00:00:00'))}",
+                                                                      "${DateFormat('dd/MM/yyyy hh:mm a').format(DateTime.parse('${lotteryModel!.data!.lotteries![index].closingTime}'))}",
                                                                       style: Theme.of(
                                                                               context)
                                                                           .textTheme
@@ -888,7 +879,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                               fontSize:
                                                                                   10,
                                                                               color: AppColors
-                                                                                  .fntClr,
+                                                                                  .whit,
                                                                               fontWeight:
                                                                                   FontWeight.bold),
                                                                     )
@@ -973,17 +964,32 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                               FontWeight
                                                                                   .bold),
                                                                     )
-                                                                  : Text(
-                                                                      "₹${lotteryModel!.data!.lotteries?[index].winningPositionHistory?.first.winnerPrice}",
-                                                                      style: const TextStyle(
-                                                                          color: Colors
-                                                                              .black,
-                                                                          fontSize:
-                                                                              12,
-                                                                          fontWeight:
-                                                                              FontWeight
-                                                                                  .bold),
-                                                                    ),
+                                                                  : Row(
+                                                                    children: [
+                                                                      Text(
+                                                                           numericRegex.hasMatch("${lotteryModel!.data!.lotteries?[index].winningPositionHistory?.first.winnerPrice}")?"₹" :"",
+                                                                          style: const TextStyle(
+                                                                              color: Colors
+                                                                                  .black,
+                                                                              fontSize:
+                                                                                  12,
+                                                                              fontWeight:
+                                                                                  FontWeight
+                                                                                      .bold),
+                                                                        ),
+                                                                      Text(
+                                                                        "${lotteryModel!.data!.lotteries?[index].winningPositionHistory?.first.winnerPrice}",
+                                                                        style: const TextStyle(
+                                                                            color: Colors
+                                                                                .black,
+                                                                            fontSize:
+                                                                            12,
+                                                                            fontWeight:
+                                                                            FontWeight
+                                                                                .bold),
+                                                                      ),
+                                                                    ],
+                                                                  ),
                                                             ),
                                                             //   Text(
                                                             //     "₹ ${lotteryModel!.data!.lotteries![index].winningPositionHistory!.first.winnerPrice}",

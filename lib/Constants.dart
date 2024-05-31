@@ -23,7 +23,6 @@ class AppConstants {
  static const profileIcon = 'assets/icons/profile.png';
  static const tennisIcon = 'assets/icons/tennis.png';
  static const menuIcon = 'assets/icons/menu.png';
- 
-
 
 }
+final numericRegex = RegExp(r'^-?[0-9]+$');

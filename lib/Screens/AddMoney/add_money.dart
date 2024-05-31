@@ -273,10 +273,6 @@ class _AddMoneyState extends State<AddMoney> {
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return "Please enter amount".tr;
-                              } else if (value.length < 3) {
-                                Fluttertoast.showToast(
-                                    msg:
-                                        "Please enter a withdrawal amount between ₹100 and ₹10000, as per the maximum limit allowed on Prizedot");
                               }
                               return null;
                             },

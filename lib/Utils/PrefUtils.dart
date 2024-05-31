@@ -24,4 +24,5 @@ class PreferenceUtils {
 class PrefKeys {
   static const language = "language";
   static const isLogin = "isLogin";
+  static const settings = "settings";
 }
