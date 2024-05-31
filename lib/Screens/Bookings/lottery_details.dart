@@ -286,12 +286,17 @@ class _LotteryDetailsState extends State<LotteryDetails> {
                                               style: const TextStyle(
                                                   color: AppColors.red,
                                                   fontWeight: FontWeight.bold))
-                                          : Text(
-                                             (numericRegex.hasMatch("${results[index].price}")?"₹":"") +'${results[index].price}',
+                                          : SizedBox(
+                                    width:MediaQuery.of(context).size.width*.23,
+                                            child: Text(
+                                               (numericRegex.hasMatch("${results[index].price}")?"₹":"") +'${results[index].price}',
+                                              textAlign: TextAlign.right,
                                               style: const TextStyle(
-                                                  color: AppColors.fntClr,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
+                                                    color: AppColors.fntClr,
+                                                    fontWeight: FontWeight.bold),
+
+                                              ),
+                                          ),
                                 ],
                               ),
                             );
